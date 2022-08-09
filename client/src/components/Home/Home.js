@@ -44,7 +44,7 @@ const Home = () => {
   return (
     <Box paddingBottom={'50vh'}>
       <NavBar />
-      <TopHero type={'Staking'} />
+      <TopHero type={'Staking'} path={"home"} />
       {stakes.map((data, key) => (
         <Box
           {...{ key }}

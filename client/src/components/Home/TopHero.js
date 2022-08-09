@@ -1,7 +1,7 @@
 import { Box, Flex, Text, Button } from '@chakra-ui/react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 
-const TopHero = ({ type }) => {
+const TopHero = ({ type, path }) => {
   return (
     <Flex
       direction={'column'}
@@ -21,13 +21,15 @@ const TopHero = ({ type }) => {
         </Box>
 
         <Box>
-          <Button
-            rightIcon={<AiFillPlusCircle color="#233CEC" />}
-            px={3}
-            bg={'#ffffff'}
-          >
-            <Text fontSize={12}>Create Pool</Text>
-          </Button>
+          {path != 'home' ? null : (
+            <Button
+              rightIcon={<AiFillPlusCircle color="#233CEC" />}
+              px={3}
+              bg={'#ffffff'}
+            >
+              <Text fontSize={12}>Create Pool</Text>
+            </Button>
+          )}
         </Box>
       </Flex>
     </Flex>
