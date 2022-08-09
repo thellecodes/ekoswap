@@ -18,9 +18,9 @@ const Swap = () => {
         mx="auto"
       >
         <Box
-          maxW={'55%'}
-          px={{ base: '1rem', md: '3rem' }}
-          py={{ base: '2rem' }}
+          maxW={{base: "100%", lg: "55%" }}
+          px={{ base: '0.5rem', md: '1rem' }}
+          py={{ base: '1rem' }}
           bgGradient="linear(to-r, #402B40, #26A17B)"
           borderRadius={'1.6rem'}
           mx="auto"
