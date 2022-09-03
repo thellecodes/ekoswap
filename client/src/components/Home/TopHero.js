@@ -1,7 +1,7 @@
 import { Box, Flex, Text, Button } from '@chakra-ui/react';
 import { AiFillPlusCircle } from 'react-icons/ai';
 
-const TopHero = ({ type, path }) => {
+const TopHero = ({ type, path, action }) => {
   return (
     <Flex
       direction={'column'}
@@ -27,7 +27,7 @@ const TopHero = ({ type, path }) => {
               px={3}
               bg={'#ffffff'}
             >
-              <Text fontSize={12}>Create Pool</Text>
+              <Text fontSize={12}>{action ? action : 'Create Pool'}</Text>
             </Button>
           )}
         </Box>

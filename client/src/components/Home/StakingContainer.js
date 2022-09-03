@@ -111,7 +111,7 @@ const StakingContainer = ({ data }) => {
                                 mr="1rem"
                                 fontSize={{
                                   base: '0.8rem',
-                                  md: '1.5rem',
+                                  md: '1.2rem',
                                 }}
                               >
                                 $56M
@@ -142,7 +142,7 @@ const StakingContainer = ({ data }) => {
                                 mr="1rem"
                                 fontSize={{
                                   base: '0.8rem',
-                                  md: '1.5rem',
+                                  md: '1.2rem',
                                 }}
                               >
                                 159.5%
@@ -173,7 +173,7 @@ const StakingContainer = ({ data }) => {
                                 color={isExpanded ? 'black' : 'ekoswap.primary'}
                                 fontSize={{
                                   base: '0.8rem',
-                                  md: '1.5rem',
+                                  md: '1.2rem',
                                 }}
                               >
                                 $EKT 400K
@@ -205,7 +205,7 @@ const StakingContainer = ({ data }) => {
                                   }
                                   fontSize={{
                                     base: '0.8rem',
-                                    md: '1.5rem',
+                                    md: '1.2rem',
                                   }}
                                 >
                                   $EKT 2,400
@@ -267,7 +267,7 @@ const StakingContainer = ({ data }) => {
                                 >
                                   <Text
                                     fontWeight={'bold'}
-                                    fontSize="1rem"
+                                    fontSize="0.8rem"
                                     textTransform={'uppercase'}
                                     color="white"
                                   >
@@ -296,7 +296,7 @@ const StakingContainer = ({ data }) => {
                                 >
                                   <Text
                                     fontWeight={'bold'}
-                                    fontSize="1rem"
+                                    fontSize="0.8rem"
                                     textTransform={'uppercase'}
                                     color="white"
                                   >
