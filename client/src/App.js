@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { theme } from './chakra-utils/theme';
 import Home from './components/Home/Home';
 import Swap from './components/Swap/Swap';
+import Create from './components/Pool/Create';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/swap" element={<Swap />} />
           <Route path="/info" element={<Info />} />
+          <Route path="/pool/create" element={<Create />} />
         </Routes>
       </Router>
     </ChakraProvider>

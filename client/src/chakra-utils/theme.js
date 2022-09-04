@@ -10,7 +10,8 @@ const colors = {
     bl3: "5A1DA3",
     silver: '#DFDEFA',
     brown: '#402B40',
-    btnGrad1: "linear-gradient(264.3deg, #233CEC 4.41%, #A6A9CA 40.3%, rgba(249, 238, 180, 0.99) 84.31%)"
+    btnGrad1: "linear-gradient(264.3deg, #233CEC 4.41%, #A6A9CA 40.3%, rgba(249, 238, 180, 0.99) 84.31%)",
+    btnGrad2:"linear-gradient(90deg, #233CEC 0%, #FEF2AF 100%);"
   },
 };
 

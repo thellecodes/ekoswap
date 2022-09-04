@@ -5,19 +5,17 @@ import ThelleRound from "../../assets/thelleround.png"
 import Link from "../../styled/Links"
 
 const Info = () => {
+    const d = ["M 0 0", "L100"]
+
     return (
         <Box paddingBottom={'50vh'}>
             <NavBar />
             <TopHero path={"home"} action="Increase Position Size" />
 
-            <Box mt="15px"
-                w={{ base: '100%', md: "80%", }}
-                px={{ base: '2rem', md: '4rem' }}
-                top={'0%'}
-                left={{ base: '0%', lg: '9%' }}
-                translateX="50%"
+            <Box
+                mt="15px"
+                px={{ base: '1rem', md: '1rem' }}
                 maxW="900px"
-                minW="20rem"
                 mx="auto"
             >
                 <Grid
@@ -60,7 +58,9 @@ const Info = () => {
                                     </Flex>
                                 </GridItem>
                                 <GridItem border={"1px"} borderColor="red">
-                                    svg animatable image
+                                    <svg strokeWidth={"5"}>
+                                        <path d={d.join(" ")} color="red" />
+                                    </svg>
                                 </GridItem>
                                 <GridItem pt="2">
                                     <Flex justifyContent={"space-between"}>
@@ -211,7 +211,6 @@ const Info = () => {
                                             </Flex>
 
                                             <Flex
-                                                // bg={"radial-gradient(99% 2299.32% at 7.5% 57.83%, #FEF2AE 0%, rgba(254, 242, 174, 0) 100%)"}
                                                 bg="#C1C3BE"
                                                 mt="2"
                                                 borderRadius={{ base: '5px', md: "10px" }}

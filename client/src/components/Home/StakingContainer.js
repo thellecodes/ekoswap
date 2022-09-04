@@ -13,7 +13,7 @@ import {
   Text,
   Button,
 } from '@chakra-ui/react';
-import Link, { InternalLink } from '../../styled/Links';
+import { InternalLink } from '../../styled/Links';
 
 const StakingContainer = ({ data }) => {
   const inPosition = data.inPosition;
