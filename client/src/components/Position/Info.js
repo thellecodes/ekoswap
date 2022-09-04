@@ -206,7 +206,7 @@ const Info = () => {
                                                     _active={{ bg: "ekoswap.btnGrad1" }}
                                                     bg="ekoswap.btnGrad1"
                                                 >
-                                                    <Text color={"white"} fontWeight={"bold"}>200.7</Text>
+                                                    <Text color={"white"} fontWeight={"bold"}>Claim</Text>
                                                 </Button>
                                             </Flex>
 
