@@ -4,7 +4,7 @@ import NavBar from '../components/Home/NavBar';
 const PageLoader = () => {
 	return (
 		<Flex justify='center' align='center' w='full' h='100vh'>
-			<Navbar />
+			<NavBar />
 			<Spinner
 				mt='10ch'
 				speed='0.75s'

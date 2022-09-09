@@ -8,7 +8,7 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Button
+  Text
 } from '@chakra-ui/react';
 import Info from "./components/Position/Info"
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -16,6 +16,7 @@ import { theme } from './chakra-utils/theme';
 import Home from './components/Home/Home';
 import Swap from './components/Swap/Swap';
 import Create from './components/Pool/Create';
+import Increase from "./components/Pool/Increase"
 
 /*Contexts*/
 import { WalletContextProvider } from "./context/WalletContext"
@@ -42,24 +43,24 @@ function App() {
               <Route path="/swap" element={<Swap />} />
               <Route path="/info" element={<Info />} />
               <Route path="/pool/create" element={<Create />} />
+              <Route path="/pool/increase" element={<Increase />} />
             </Routes>
           </Router>
 
           <Modal isOpen={isRModalOpen} onClose={closeRModal}>
             <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Modal Title</ModalHeader>
+            <ModalContent
+              mx={{ base: "1.2rem", md: "0.5rem" }}
+              mt={{ base: "6rem", md: "10rem" }}
+            >
+              <ModalHeader><Text fontSize={"xs"}>Select a token</Text></ModalHeader>
+
               <ModalCloseButton />
               <ModalBody>
-                this is modal body
+
               </ModalBody>
 
-              <ModalFooter>
-                <Button colorScheme='blue' mr={3} onClick={closeRModal}>
-                  Close
-                </Button>
-                <Button variant='ghost'>Secondary Action</Button>
-              </ModalFooter>
+              <ModalFooter></ModalFooter>
             </ModalContent>
           </Modal>
         </RModalContextProvider>

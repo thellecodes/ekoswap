@@ -30,7 +30,6 @@ const Swap = () => {
         minW="20rem"
         mx="auto"
       >
-
         <Box
           maxW={{ base: "100%", lg: "55%" }}
           px={{ base: '0.5rem', md: '1rem' }}
@@ -73,7 +72,9 @@ const Swap = () => {
                     bg="unset"
                     _hover={"unset"}
                     _active="unset"
-                    _focus={"unset"}>
+                    _focus={"unset"}
+                    onClick={openRModal}
+                  >
                     <Flex
                       cursor={'pointer'}
                       rounded="full"
@@ -179,7 +180,9 @@ const Swap = () => {
                     bg="unset"
                     _hover={"unset"}
                     _active="unset"
-                    _focus={"unset"}>
+                    _focus={"unset"}
+                    onClick={openRModal}
+                  >
                     <Flex
                       cursor={'pointer'}
                       rounded="full"

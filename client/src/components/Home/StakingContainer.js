@@ -248,7 +248,7 @@ const StakingContainer = ({ data }) => {
                           >
                             {inPosition ? (
                               <InternalLink
-                                to="/"
+                                to="/info"
                                 display={{
                                   base: 'none',
                                   lg: 'inline-block',
@@ -277,7 +277,7 @@ const StakingContainer = ({ data }) => {
                               </InternalLink>
                             ) : (
                               <InternalLink
-                                to="/addliquidity"
+                                to="/pool/create"
                                 display={{
                                   base: 'none',
                                   lg: 'inline-block',
@@ -445,7 +445,7 @@ const StakingContainer = ({ data }) => {
                 {inPosition ? (
                   <Flex py="1rem">
                     <InternalLink
-                      to="/addliquidity"
+                      to="/pool/increase"
                       display={{
                         lg: 'inline-block',
                       }}

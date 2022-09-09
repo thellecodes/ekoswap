@@ -57,12 +57,14 @@ const NavBar = () => {
             top="0%"
             borderRadius="0 0 1rem 1rem"
           >
-            <Image
-              cursor={'pointer'}
-              src={'/assets/ekoswap.svg'}
-              h={{ base: '30px', md: '3ch' }}
-              alt="logo"
-            />
+            <InternalLink to="/" style={{ textDecoration: 'none' }}>
+              <Image
+                cursor={'pointer'}
+                src={'/assets/ekoswap.svg'}
+                h={{ base: '30px', md: '3ch' }}
+                alt="logo"
+              />
+            </InternalLink>
 
             <Box
               position={{ base: 'fixed', lg: 'relative' }}
