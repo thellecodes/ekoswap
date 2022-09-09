@@ -2,13 +2,12 @@ import { useState } from 'react';
 import {
   Flex,
   Image,
-  IconButton,
   Text,
   Box,
   Avatar,
   Button,
 } from '@chakra-ui/react';
-import { VscMenu } from 'react-icons/vsc';
+import { ExternalLink, InternalLink } from "../../styled/Links"
 
 const NavBar = () => {
   const [connected] = useState(false);
@@ -81,17 +80,23 @@ const NavBar = () => {
                 fontWeight="bold"
                 justifyContent="space-between"
               >
-                <Box px={5} cursor="pointer">
-                  <Text fontSize={'0.8rem'}>Dashboard</Text>
-                </Box>
+                <InternalLink to="/" style={{ textDecoration: 'none' }}>
+                  <Box px={5} cursor="pointer">
+                    <Text fontSize={'0.8rem'}>Dashboard</Text>
+                  </Box>
+                </InternalLink>
 
-                <Box px={5} className="nav-active" cursor={'pointer'}>
-                  <Text fontSize={'0.8rem'}>Swap</Text>
-                </Box>
+                <InternalLink to="/swap" style={{ textDecoration: 'none' }}>
+                  <Box px={5} className="nav-active" cursor={'pointer'}>
+                    <Text fontSize={'0.8rem'}>Swap</Text>
+                  </Box>
+                </InternalLink>
 
-                <Box px={5} cursor="pointer">
-                  <Text fontSize={'0.8rem'}>Marketplace</Text>
-                </Box>
+                <ExternalLink href="https://nft-market-steel.vercel.app" style={{ textDecoration: 'none' }}>
+                  <Box px={5} cursor="pointer">
+                    <Text fontSize={'0.8rem'}>Marketplace</Text>
+                  </Box>
+                </ExternalLink>
               </Flex>
             </Box>
 

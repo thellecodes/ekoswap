@@ -1,14 +1,27 @@
-import { Box, Text, Flex, Input, Avatar, Button } from '@chakra-ui/react';
+import { useContext } from 'react'
+import {
+  Box, Text, Flex, Input, Avatar, Button,
+} from '@chakra-ui/react';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import { GiVerticalFlip } from 'react-icons/gi';
 import NavBar from '../Home/NavBar';
 import TopHero from '../Home/TopHero';
 
+/*Contexts*/
+import { WalletContext } from '../../context/WalletContext';
+import { RModalContext } from '../../context/RModalContext';
+
 const Swap = () => {
+
+  const { isRModalOpen, openRModal, closeRModal } = useContext(RModalContext)
+
+  const selectToken = () => { }
+
   return (
     <Box w="full" h="100vh" bg="ekoswap.primary">
       <NavBar />
       <TopHero type={''} path="swap" />
+
       <Box
         w={{ base: '100%' }}
         px={{ base: '2rem', md: '4rem' }}
@@ -17,8 +30,9 @@ const Swap = () => {
         minW="20rem"
         mx="auto"
       >
+
         <Box
-          maxW={{base: "100%", lg: "55%" }}
+          maxW={{ base: "100%", lg: "55%" }}
           px={{ base: '0.5rem', md: '1rem' }}
           py={{ base: '1rem' }}
           bgGradient="linear(to-r, #402B40, #26A17B)"
@@ -53,43 +67,51 @@ const Swap = () => {
                 py="0.8rem"
               >
                 <Box>
-                  <Flex
-                    cursor={'pointer'}
-                    rounded="full"
-                    py="0.4rem"
-                    background={'#394B50'}
-                    alignItems="center"
-                    _hover={{
-                      background: '#3F2F42',
-                    }}
-                    px="0.5rem"
-                    justifyContent="space-between"
-                  >
-                    <Avatar
-                      name="EKO"
-                      src="/assets/eko.png"
-                      border={'unset'}
-                      bg="ekoswap.silver"
-                      size={{ base: 'xs', lg: 'sm' }}
-                    />
+                  <Button
+                    padding={"unset"}
+                    margin="unset"
+                    bg="unset"
+                    _hover={"unset"}
+                    _active="unset"
+                    _focus={"unset"}>
                     <Flex
-                      ml="0.5rem"
-                      color="white"
-                      alignItems={'center'}
-                      fontWeight="bold"
-                      fontSize={'1.3rem'}
+                      cursor={'pointer'}
+                      rounded="full"
+                      py="0.4rem"
+                      background={'#394B50'}
+                      alignItems="center"
+                      _hover={{
+                        background: '#3F2F42',
+                      }}
+                      px="0.5rem"
+                      justifyContent="space-between"
                     >
-                      <Text
-                        color={'white'}
+                      <Avatar
+                        name="EKO"
+                        src="/assets/eko.png"
+                        border={'unset'}
+                        bg="ekoswap.silver"
+                        size="xs"
+                      />
+                      <Flex
+                        ml="0.5rem"
+                        color="white"
+                        alignItems={'center'}
                         fontWeight="bold"
-                        fontSize={{ base: '0.8rem', md: '1rem' }}
-                        userSelect="none"
+                        fontSize={'1.3rem'}
                       >
-                        EKO
-                      </Text>
-                      <RiArrowDropDownLine />
+                        <Text
+                          color={'white'}
+                          fontWeight="bold"
+                          fontSize={"xs"}
+                          userSelect="none"
+                        >
+                          EKO
+                        </Text>
+                        <RiArrowDropDownLine />
+                      </Flex>
                     </Flex>
-                  </Flex>
+                  </Button>
                   {/* <Flex alignItems={'center'}>
                     <Text
                       color="white"
@@ -151,50 +173,55 @@ const Swap = () => {
                 py="0.8rem"
               >
                 <Box>
-                  <Flex
-                    cursor={'pointer'}
-                    rounded="full"
-                    py="0.4rem"
-                    background={'#394B50'}
-                    alignItems="center"
-                    _hover={{
-                      background: '#3F2F42',
-                    }}
-                    px="0.5rem"
-                    justifyContent="space-between"
-                  >
-                    <Avatar
-                      name="EKO"
-                      src="/assets/eko.png"
-                      border={'unset'}
-                      bg="ekoswap.silver"
-                      size={{ base: 'xs', lg: 'sm' }}
-                    />
+                  <Button
+                    padding={"unset"}
+                    margin="unset"
+                    bg="unset"
+                    _hover={"unset"}
+                    _active="unset"
+                    _focus={"unset"}>
                     <Flex
-                      ml="0.5rem"
-                      color="white"
-                      alignItems={'center'}
-                      fontWeight="bold"
-                      fontSize={'1.3rem'}
+                      cursor={'pointer'}
+                      rounded="full"
+                      py="0.4rem"
+                      background={'#394B50'}
+                      alignItems="center"
+                      _hover={{ background: '#3F2F42' }}
+                      px="0.5rem"
+                      justifyContent="space-between"
                     >
-                      <Text
-                        color={'white'}
+                      <Avatar
+                        name="EKO"
+                        src="/assets/eko.png"
+                        border={'unset'}
+                        bg="ekoswap.silver"
+                        size={'xs'}
+                      />
+                      <Flex
+                        ml="0.5rem"
+                        color="white"
+                        alignItems={'center'}
                         fontWeight="bold"
-                        fontSize={{ base: '0.8rem', md: '1rem' }}
-                        userSelect="none"
+                        fontSize={'1.3rem'}
                       >
-                        EKO
-                      </Text>
-                      <RiArrowDropDownLine />
+                        <Text
+                          color={'white'}
+                          fontWeight="bold"
+                          fontSize={"xs"}
+                          userSelect="none"
+                        >
+                          EKO
+                        </Text>
+                        <RiArrowDropDownLine />
+                      </Flex>
                     </Flex>
-                  </Flex>
-                  {/* <Flex alignItems={'center'}>
+                  </Button>
+                  <Flex alignItems={'center'} margin="unset" padding={"unset"}>
                     <Text
                       color="white"
                       fontWeight={'normal'}
-                      fontSize="0.7rem"
+                      fontSize="0.5rem"
                       whiteSpace={'nowrap'}
-                      mr="0.8rem"
                     >
                       In Wallet: 22ETH
                     </Text>
@@ -203,12 +230,11 @@ const Swap = () => {
                       bg="unset"
                       _hover={'unset'}
                       _active="unset"
-                      fontSize="0.7rem"
-                      fontWeight={'bold'}
+                      fontSize="0.4rem"
                     >
                       <Text color={'ekoswap.secondary'}>(Max)</Text>
                     </Button>
-                  </Flex> */}
+                  </Flex>
                 </Box>
                 <Flex flexDir="column" alignItems={'flex-end'}>
                   <Box>
@@ -295,8 +321,10 @@ const Swap = () => {
             </Flex>
           </Flex>
         </Box>
+
+
       </Box>
-    </Box>
+    </Box >
   );
 };
 
