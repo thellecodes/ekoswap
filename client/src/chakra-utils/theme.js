@@ -1,0 +1,63 @@
+import { extendTheme } from '@chakra-ui/react';
+
+const colors = {
+  white: '#ffffff',
+  black: '#000000',
+  ekoswap: {
+    primary: '#FEF2AF',
+    secondary: '#233CEC',
+    secondaryColor: "#5E75D7",
+    bl3: "5A1DA3",
+    silver: '#DFDEFA',
+    brown: '#402B40',
+    btnGrad1: "linear-gradient(264.3deg, #233CEC 4.41%, #A6A9CA 40.3%, rgba(249, 238, 180, 0.99) 84.31%)",
+    btnGrad2: "linear-gradient(90deg, #233CEC 0%, #FEF2AF 100%);"
+  },
+};
+
+const breakpoints = {
+  mobile: '480px',
+  tablet: '768px',
+};
+
+const styles = {
+  global: () => ({
+    html: {
+      fontSize: { base: '14px', md: '18px' },
+      scrollBehaivor: 'smooth',
+    },
+    body: {
+      fontFamily: '"Poppins", sans-serif',
+      background: 'ekoswap.primary',
+      color: 'brand.dark.100',
+      tansition: 'all 0.2s ease-in-out',
+    },
+    button: {
+      cursor: 'pointer',
+      transition: 'all 0.2s ease-in-out',
+      '&:focus': {
+        outline: 'none',
+      },
+    },
+    a: {
+      cursor: 'pointer',
+      transition: 'all 0.2s ease-in-out',
+      '&:focus': {
+        outline: 'none',
+      },
+      textDecoration: 'none'
+    },
+    img: {
+      userSelect: 'none',
+    },
+    select: {
+      background: 'none',
+      boxShadow: 'none',
+      border: 'none',
+      hover: 'unset',
+      cursor: 'pointer'
+    }
+  }),
+};
+
+export const theme = extendTheme({ styles, colors, breakpoints });
