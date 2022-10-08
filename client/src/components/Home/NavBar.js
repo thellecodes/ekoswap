@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   Flex,
   Image,
@@ -8,27 +8,14 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { ExternalLink, InternalLink } from "../../styled/Links"
+import { WalletContext } from '../../context/WalletContext';
 
 const NavBar = () => {
   const [connected] = useState(false);
+  const { onConnect, ethAddress } = useContext(WalletContext);
 
-  const navLinks = [
-    {
-      name: 'Moto',
-      path: '/#moto',
-      id: 'moto',
-    },
-    {
-      name: 'Team',
-      path: '/#team',
-      id: 'team',
-    },
-    {
-      name: 'Roadmap',
-      path: '/#roadmap',
-      id: 'roadmap',
-    },
-  ];
+  // console.log(localStorage.getItem("ethAddress"))
+  console.log(ethAddress)
 
   return (
     <Box
@@ -116,6 +103,7 @@ const NavBar = () => {
                         size={{ base: 'sm' }}
                       />
                     }
+                    onClick={onConnect}
                   >
                     Connect
                   </Button>

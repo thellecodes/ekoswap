@@ -1,3 +1,4 @@
+import React, { lazy, Suspense } from 'react';
 import {
   ChakraProvider,
   useDisclosure,
@@ -10,17 +11,13 @@ import {
   ModalFooter,
   Text
 } from '@chakra-ui/react';
-import Info from "./components/Position/Info"
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { theme } from './chakra-utils/theme';
-import Home from './components/Home/Home';
-import Swap from './components/Swap/Swap';
-import Create from './components/Pool/Create';
-import Increase from "./components/Pool/Increase"
 
 /*Contexts*/
 import { WalletContextProvider } from "./context/WalletContext"
 import { RModalContextProvider } from './context/RModalContext';
+import PageLoader from './components/PageLoader';
 
 function App() {
 
@@ -34,16 +31,44 @@ function App() {
   return (
     <ChakraProvider {...{ theme }}>
       <WalletContextProvider value={{ name: 'samuel' }}>
-        <RModalContextProvider
-          value={{ isRModalOpen, openRModal, closeRModal }}
-        >
+        <RModalContextProvider value={{ isRModalOpen, openRModal, closeRModal }} >
           <Router>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/swap" element={<Swap />} />
-              <Route path="/info" element={<Info />} />
-              <Route path="/pool/create" element={<Create />} />
-              <Route path="/pool/increase" element={<Increase />} />
+              <Route path="/"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    {React.createElement(lazy(() => import('./components/Home/Home')))}
+                  </Suspense>
+                }
+              />
+              <Route path="/swap"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    {React.createElement(lazy(() => import('./components/Swap/Swap')))}
+                  </Suspense>
+                }
+              />
+              <Route path="/info"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    {React.createElement(lazy(() => import('./components/Position/Info')))}
+                  </Suspense>
+                }
+              />
+              <Route path="/pool/create"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    {React.createElement(lazy(() => import('./components/Pool/Create')))}
+                  </Suspense>
+                }
+              />
+              <Route path="/pool/increase"
+                element={
+                  <Suspense fallback={<PageLoader />}>
+                    {React.createElement(lazy(() => import('./components/Pool/Increase')))}
+                  </Suspense>
+                }
+              />
             </Routes>
           </Router>
 
