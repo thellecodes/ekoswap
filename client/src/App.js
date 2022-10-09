@@ -128,6 +128,21 @@ function App() {
     });
   }, [isConnected])
 
+
+  useEffect(() => {
+    if (!window.ethereum) return;
+
+    window.ethereum.on('accountsChanged', async () => {
+      localStorage.removeItem("ethAddress");
+      setAccount("");
+      setEthAddress("");
+      setSigner(null);
+      setProvider(null);
+      setIsConnected(false);
+
+    });
+  }, [])
+
   return (
     <ChakraProvider {...{ theme }}>
       <WalletContextProvider value={{

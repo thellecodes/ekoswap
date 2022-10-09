@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, } from 'react';
 import {
   Flex,
   Image,
@@ -6,13 +6,25 @@ import {
   Box,
   Avatar,
   Button,
+  useToast
 } from '@chakra-ui/react';
 import { ExternalLink, InternalLink } from "../../styled/Links"
 import { WalletContext } from '../../context/WalletContext';
 
 const NavBar = () => {
-  const [connected] = useState(false);
   const { onConnect, account } = useContext(WalletContext);
+  const toast = useToast();
+
+  const onDisconnect = () => {
+    return toast({
+      title: 'Disconnect',
+      description: "Disconnect feature unavailable",
+      status: 'warning',
+      duration: 2000,
+      variant: 'solid',
+      position: 'top-right',
+    });
+  }
 
   return (
     <Box
@@ -92,6 +104,14 @@ const NavBar = () => {
                   bg="none"
                   boxShadow="xl"
                   onClick={onConnect}
+                  leftIcon={
+                    <Avatar
+                      name="Meta Mask"
+                      src={'/assets/metamask.png'}
+                      bg="none"
+                      size={{ base: 'sm' }}
+                    />
+                  }
                 >
                   Connect
                 </Button>
@@ -107,11 +127,10 @@ const NavBar = () => {
                       size={{ base: 'sm' }}
                     />
                   }
-                  onClick={() => alert("disconnect")}
+                  onClick={onDisconnect}
                 >
                   Disconnect
                 </Button>
-
               }
 
               {/* {account ? (
