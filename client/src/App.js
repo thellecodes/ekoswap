@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import {
   ChakraProvider,
   useDisclosure,
@@ -9,9 +9,11 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Text
+  Text,
+  useToast
 } from '@chakra-ui/react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ethers } from 'ethers'
 import { theme } from './chakra-utils/theme';
 
 /*Contexts*/
@@ -20,6 +22,13 @@ import { RModalContextProvider } from './context/RModalContext';
 import PageLoader from './components/PageLoader';
 
 function App() {
+  const [isConnectable, setIsConnectable] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [account, setAccount] = useState("");
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [ethAddress, setEthAddress] = useState("");
+  const toast = useToast();
 
   const {
     isOpen: isRModalOpen,
@@ -27,10 +36,108 @@ function App() {
     onClose: closeRModal,
   } = useDisclosure();
 
+  const onConnect = async () => {
+    if (!window.ethereum)
+      return toast({
+        title: 'Download Wallet',
+        description: "Install E-Wallet to Continue",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        variant: 'solid',
+        position: 'top-right',
+      });
+
+    const localProvider = new ethers.providers.Web3Provider(window.ethereum);
+    const localSigner = localProvider.getSigner();
+
+    const isMetaMaskConnected = await window.ethereum.request({
+      method: "eth_accounts",
+    });
+
+    // remove existing address if wallet is not connected to browser
+    if (isMetaMaskConnected.length < 1) {
+      localProvider.send("eth_requestAccounts", []).then((accounts) => {
+        localStorage.setItem("ethAddress", accounts[0]);
+        setAccount(accounts[0])
+        setIsConnected(true);
+      });
+      setEthAddress(account);
+      setProvider(localProvider);
+      setSigner(localSigner);
+
+    } else {
+      localProvider
+        .send('eth_requestAccounts', [])
+        .then((accounts) => {
+          setAccount(accounts[0])
+          localStorage.setItem("ethAddress", accounts[0]);
+        });
+      setProvider(localProvider);
+      setSigner(localSigner);
+      setEthAddress(account)
+    }
+  }
+
+  const checkConnection = async () => {
+    const localProvider = new ethers.providers.Web3Provider(window.ethereum);
+    const localSigner = localProvider.getSigner();
+
+    if (typeof window.ethereum != "object") {
+      setIsConnectable(false);
+    }
+
+    const connectedWallets = await window.ethereum.request({
+      method: "eth_accounts",
+    });
+
+    if (connectedWallets.length < 1) {
+      localStorage.removeItem("ethAddress");
+    } else {
+      localProvider
+        .send('eth_requestAccounts', [])
+        .then((accounts) => {
+          localStorage.setItem("ethAddress", accounts[0]);
+          setAccount(accounts[0]);
+        });
+      setProvider(localProvider);
+      setSigner(localSigner);
+      setEthAddress(account);
+      setIsConnectable(true);
+    }
+  }
+
+  useEffect(() => {
+    if (!window.ethereum)
+      return setIsConnectable(false);
+
+    //check for 
+    checkConnection();
+  }, [])
+
+  useEffect(() => {
+    if (!isConnected) return
+
+    toast({
+      title: 'Connected',
+      description: "E-Wallet is connected",
+      status: 'success',
+      duration: 3000,
+      variant: 'solid',
+      position: 'top-right',
+    });
+  }, [isConnected])
 
   return (
     <ChakraProvider {...{ theme }}>
-      <WalletContextProvider value={{ name: 'samuel' }}>
+      <WalletContextProvider value={{
+        isConnectable,
+        account,
+        provider,
+        signer,
+        ethAddress,
+        onConnect
+      }}>
         <RModalContextProvider value={{ isRModalOpen, openRModal, closeRModal }} >
           <Router>
             <Routes>

@@ -8,7 +8,6 @@ const main = async () => {
 
     console.log(`Contract Deployed by Account %s \n \n`, deployer.address);
     
-    // 0x59b670e9fA9D0A427751Af201D676719a970857b
     console.log(`Uniswap Factory Contract Address %s`, Uniswapv3FactoryInstance.address);
 };
 

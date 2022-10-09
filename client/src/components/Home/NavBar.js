@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import {
   Flex,
   Image,
@@ -12,10 +12,7 @@ import { WalletContext } from '../../context/WalletContext';
 
 const NavBar = () => {
   const [connected] = useState(false);
-  const { onConnect, ethAddress } = useContext(WalletContext);
-
-  // console.log(localStorage.getItem("ethAddress"))
-  console.log(ethAddress)
+  const { onConnect, account } = useContext(WalletContext);
 
   return (
     <Box
@@ -90,32 +87,39 @@ const NavBar = () => {
             </Box>
 
             <Flex align="center">
-              {!connected ? (
-                <>
-                  <Button
-                    bg="none"
-                    boxShadow="xl"
-                    leftIcon={
-                      <Avatar
-                        name="Meta Mask"
-                        src={'/assets/metamask.png'}
-                        bg="none"
-                        size={{ base: 'sm' }}
-                      />
-                    }
-                    onClick={onConnect}
-                  >
-                    Connect
-                  </Button>
-                </>
-              ) : null}
+              {!account ? (
+                <Button
+                  bg="none"
+                  boxShadow="xl"
+                  onClick={onConnect}
+                >
+                  Connect
+                </Button>
+              ) :
+                <Button
+                  bg="none"
+                  boxShadow="xl"
+                  leftIcon={
+                    <Avatar
+                      name="Meta Mask"
+                      src={'/assets/metamask.png'}
+                      bg="none"
+                      size={{ base: 'sm' }}
+                    />
+                  }
+                  onClick={() => alert("disconnect")}
+                >
+                  Disconnect
+                </Button>
 
-              {connected ? (
+              }
+
+              {/* {account ? (
                 <Flex direction="column">
                   <Text fontSize={{ base: '10px' }}>10,200EKO</Text>
                   <Text fontSize={{ base: '10px' }}>0xbat...4f2ju</Text>
                 </Flex>
-              ) : null}
+              ) : null} */}
             </Flex>
           </Flex>
         </Box>
