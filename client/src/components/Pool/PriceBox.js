@@ -1,7 +1,10 @@
 import { Box, Flex, Text, Avatar, Button, Input } from "@chakra-ui/react";
+import { useContext } from "react";
+import { WalletContext } from "../../context/WalletContext";
 
 const PriceBox = ({ token, img, ...props }) => {
 
+    const { openRModal } = useContext(WalletContext);
 
     return (<Box position={"absolute"}
         {...props}
@@ -14,21 +17,24 @@ const PriceBox = ({ token, img, ...props }) => {
     >
         <Flex direction={"column"}>
             <Flex alignItems={"center"} justifyContent="space-between">
-                <Flex bg="#DFDEFA"
-                    px={"8px"}
-                    py={"3px"}
-                    borderRadius="0.3rem"
-                    cursor={"pointer"}
-                    alignItems="center"
-                ><Avatar name='Eko' bg="ekoswap.silver" size="xs" src={`/assets/${img}`} border="unset" />
-                    <select style={{ marginLeft: '0.5rem', backgroundColor: '#DFDEFA' }}>
-                        {["BTC", "ETH", "EKO"].map((_, key) => (
-                            <option value='option1' style={{
-                                backgroundColor: "#394B50",
-                                fontSize: "xs",
-                            }}><Text key={key}>{_}</Text></option>
-                        ))}
-                    </select>
+                <Flex alignItems="center">
+                    <Button
+                        _hover={"unset"}
+                        _focus="unset"
+                        cursor={"pointer"}
+                        bg="#DFDEFA"
+                        leftIcon={
+                            <Avatar
+                                size="xs"
+                                name='Token Name'
+                                src='https://assets.coingecko.com/coins/images/14564/thumb/Delta_logo.png'
+                            />}
+                        size="sm"
+                        colorScheme='teal'
+                        onClick={openRModal}
+                    >
+                        <Text color="ekoswap.secondary" size={"sm"}>ETH</Text>
+                    </Button>
                 </Flex>
                 <Box>
                     <Input

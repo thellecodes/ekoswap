@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
 
 const WalletContext = createContext({
     provider: null,
@@ -10,11 +10,19 @@ const WalletContext = createContext({
     setSigner: null,
     setEthAddress: null,
     setAccount: null,
-    ethAddress: null
+    ethAddress: null,
+    tokens: null,
+    listedTokens: null,
+    setListedTokens: null,
+    isRModalOpen: null,
+    openRModal: null,
+    closeRModal: null
 });
 
 const WalletContextProvider = ({ value, children }) => {
-    return (<WalletContext.Provider value={{ ...value, }}>
+
+
+    return (<WalletContext.Provider value={{ ...value }}>
         {children}
     </WalletContext.Provider>
     )

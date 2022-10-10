@@ -15,11 +15,20 @@ import {
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ethers } from 'ethers'
 import { theme } from './chakra-utils/theme';
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 /*Contexts*/
 import { WalletContextProvider } from "./context/WalletContext"
 import { RModalContextProvider } from './context/RModalContext';
 import PageLoader from './components/PageLoader';
+
+//contract abis
+import FactoryAbi from "./contracts/core/UniswapV3Factory.sol/UniswapV3Factory.json"
+import PeripheryAbi from "./contracts/periphery/SwapRouter.sol/SwapRouter.json"
+import TokenModal from './styled/TokenModal';
+import Create from './components/Pool/Increase';
+
+const queryClient = new QueryClient();
 
 function App() {
   const [isConnectable, setIsConnectable] = useState(false);
@@ -28,7 +37,18 @@ function App() {
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
   const [ethAddress, setEthAddress] = useState("");
+  const [listedTokens, setListedTokens] = useState(null);
   const toast = useToast();
+
+  // EkoToken Contract Address 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+  // Token1 Contract Address 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
+  // WETH9 Contract Address 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
+
+  // Uniswap Factory Contract Address 0x0165878A594ca255338adfa4d48449f69242Eb8F
+  const UniswapV3FactoryContractAddress = `0x0165878A594ca255338adfa4d48449f69242Eb8F`;
+
+  // Uniswap periphery Contract Address 0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6
+  const UniswapV3PeripheryAddress = `0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6`;
 
   const {
     isOpen: isRModalOpen,
@@ -111,7 +131,6 @@ function App() {
     if (!window.ethereum)
       return setIsConnectable(false);
 
-    //check for 
     checkConnection();
   }, [])
 
@@ -139,9 +158,23 @@ function App() {
       setSigner(null);
       setProvider(null);
       setIsConnected(false);
-
     });
-  }, [])
+  }, []);
+
+  const localProvider = new ethers.providers.Web3Provider(window.ethereum);
+  const localSigner = localProvider.getSigner();
+
+  const UniswapV3FactoryContract = new ethers.Contract(
+    UniswapV3FactoryContractAddress,
+    FactoryAbi.abi,
+    localSigner
+  );
+
+  const UniswapV3PeripheryContract = new ethers.Contract(
+    UniswapV3PeripheryAddress,
+    PeripheryAbi.abi,
+    localSigner
+  );
 
   return (
     <ChakraProvider {...{ theme }}>
@@ -151,66 +184,77 @@ function App() {
         provider,
         signer,
         ethAddress,
-        onConnect
+        onConnect,
+        UniswapV3FactoryContract,
+        UniswapV3PeripheryContract,
+        listedTokens,
+        setListedTokens,
+        isRModalOpen,
+        openRModal,
+        closeRModal
       }}>
-        <RModalContextProvider value={{ isRModalOpen, openRModal, closeRModal }} >
-          <Router>
-            <Routes>
-              <Route path="/"
-                element={
-                  <Suspense fallback={<PageLoader />}>
-                    {React.createElement(lazy(() => import('./components/Home/Home')))}
-                  </Suspense>
-                }
-              />
-              <Route path="/swap"
-                element={
-                  <Suspense fallback={<PageLoader />}>
-                    {React.createElement(lazy(() => import('./components/Swap/Swap')))}
-                  </Suspense>
-                }
-              />
-              <Route path="/info"
-                element={
-                  <Suspense fallback={<PageLoader />}>
-                    {React.createElement(lazy(() => import('./components/Position/Info')))}
-                  </Suspense>
-                }
-              />
-              <Route path="/pool/create"
-                element={
-                  <Suspense fallback={<PageLoader />}>
-                    {React.createElement(lazy(() => import('./components/Pool/Create')))}
-                  </Suspense>
-                }
-              />
-              <Route path="/pool/increase"
-                element={
-                  <Suspense fallback={<PageLoader />}>
-                    {React.createElement(lazy(() => import('./components/Pool/Increase')))}
-                  </Suspense>
-                }
-              />
-            </Routes>
-          </Router>
+        <QueryClientProvider client={queryClient}>
 
-          <Modal isOpen={isRModalOpen} onClose={closeRModal}>
-            <ModalOverlay />
-            <ModalContent
-              mx={{ base: "1.2rem", md: "0.5rem" }}
-              mt={{ base: "6rem", md: "10rem" }}
-            >
-              <ModalHeader><Text fontSize={"xs"}>Select a token</Text></ModalHeader>
+          <RModalContextProvider value={{ isRModalOpen, openRModal, closeRModal }} >
+            <Router>
+              <Routes>
+                <Route path="/"
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      {React.createElement(lazy(() => import('./components/Home/Home')))}
+                    </Suspense>
+                  }
+                />
+                <Route path="/swap"
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      {React.createElement(lazy(() => import('./components/Swap/Swap')))}
+                    </Suspense>
+                  }
+                />
+                <Route path="/info"
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      {React.createElement(lazy(() => import('./components/Position/Info')))}
+                    </Suspense>
+                  }
+                />
+                <Route path="/pool/create"
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      {React.createElement(lazy(() => import('./components/Pool/Create')))}
+                    </Suspense>
+                  }
+                />
+                <Route path="/pool/increase"
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      {React.createElement(lazy(() => import('./components/Pool/Increase')))}
+                    </Suspense>
+                  }
+                />
+              </Routes>
+            </Router>
 
-              <ModalCloseButton />
-              <ModalBody>
+            {/* <Modal isOpen={isRModalOpen} onClose={closeRModal}>
+              <ModalOverlay />
+              <ModalContent
+                mx={{ base: "1.2rem", md: "0.5rem" }}
+                mt={{ base: "6rem", md: "10rem" }}
+              >
+                <ModalHeader>
+                  <Text fontSize={"xs"}>Select a token</Text>
+                </ModalHeader>
+                <ModalCloseButton />
 
-              </ModalBody>
+                <ModalBody>
+                  <TokenModal />
+                </ModalBody>
 
-              <ModalFooter></ModalFooter>
-            </ModalContent>
-          </Modal>
-        </RModalContextProvider>
+              </ModalContent>
+            </Modal> */}
+          </RModalContextProvider>
+        </QueryClientProvider>
       </WalletContextProvider>
     </ChakraProvider>
   );

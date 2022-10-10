@@ -1,8 +1,52 @@
-import { Box, Flex, Text, AvatarGroup, Avatar, Button, Input } from "@chakra-ui/react";
+import {
+    Box,
+    Flex,
+    Text,
+    AvatarGroup,
+    Avatar,
+    Button,
+} from "@chakra-ui/react";
+import { useContext, useEffect, useState } from "react";
+import { WalletContext } from "../../context/WalletContext";
 import NavBar from "../Home/NavBar";
 import PriceBox from "./PriceBox";
 
 const Create = () => {
+    const {
+        UniswapV3FactoryContract,
+        UniswapV3PeripheryContract,
+        listedTokens
+    } = useContext(WalletContext);
+    const [tokens, setTokens] = useState(null);
+
+    // const getWalletDetails = async () => {
+    //     const config = {
+    //         apiKey: "3EX4KTEQy3RZlqHscYjlGD8iG7J6MA7D",
+    //         network: Network.ETH_MAINNET,
+    //     };
+
+    //     const alchemy = new Alchemy(config);
+
+    //     //Feel free to switch this wallet address with another address
+    //     const ownerAddress = "0x00000000219ab540356cbb839cbe05303d7705fa";
+
+    //     //The below token contract address corresponds to USDT
+    //     const tokenContractAddresses = ["0xdAC17F958D2ee523a2206206994597C13D831ec7"];
+
+    //     const data = await alchemy.core.getTokenBalances(
+    //         ownerAddress,
+    //         tokenContractAddresses
+    //     );
+    // }
+
+    useEffect(() => {
+        // getWalletDetails();
+        if (listedTokens) {
+            const { data } = listedTokens
+            setTokens(data.tokens);
+        }
+    }, [])
+
 
     return (
         <Box>
@@ -40,26 +84,28 @@ const Create = () => {
                         height={{ base: "180px", md: "200px" }}
                         position="relative"
                     >
-
                         <PriceBox
+                            {...{ tokens }}
                             top={"0%"}
                             translateX="0%"
                             token={"Eko"}
                             img="eko.png"
                         />
 
-
-                        <Box position={"absolute"}
+                        {/* <Box position={"absolute"}
                             top="43%"
                             width={"100%"}
-                        ><Text textAlign={"center"}>Flip</Text></Box>
+                        >
+                            <Text textAlign={"center"}>Flip</Text>
+                        </Box> */}
 
                         <PriceBox
+                            {...{ tokens }}
                             token={"ETH"}
                             bottom={"0%"}
                             img="eth.png"
                         />
-
+                        
                     </Box>
                 </Flex>
 
