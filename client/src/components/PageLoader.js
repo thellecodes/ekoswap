@@ -7,7 +7,7 @@ import { WalletContext } from '../context/WalletContext';
 const PageLoader = () => {
     const { setListedTokens } = useContext(WalletContext);
 
-    // // fetch listed tokens
+    // fetch listed tokens
     // const tokensFetchPoint = `https://tokens.coingecko.com/uniswap/all.json`;
 
     // const { data } = useQuery('tokens', () =>

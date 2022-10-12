@@ -46,9 +46,6 @@ function App() {
   const [isToTokenAddresss, setIsToTokenAddress] = useState("");
   const toast = useToast();
 
-  // fetch listed tokens
-  const tokensFetchPoint = `https://tokens.coingecko.com/uniswap/all.json`;
-
   // EkoToken Contract Address 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
   // Token1 Contract Address 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
   // WETH9 Contract Address 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
@@ -178,25 +175,6 @@ function App() {
       setProvider(null);
       setIsConnected(false);
     });
-
-
-    fetch(tokensFetchPoint)
-      .then((response) => response.json())
-      .then((data) => {
-        setListedTokens(data);
-
-        if (data) {
-          const fromToken = data.tokens[0];
-          const toToken = data.tokens[1];
-
-          setIsFromToken(fromToken.symbol);
-          setIsFromTokenImg(fromToken.logoURI);
-
-          setIsToToken(toToken.symbol);
-          setIsToTokenImg(toToken.logoURI);
-        }
-      });
-
   }, []);
 
   const UniswapV3FactoryContract = new ethers.Contract(
@@ -246,7 +224,11 @@ function App() {
         isFromTokenAddress,
         isToTokenAddresss,
         setIsFromTokenAddress,
-        setIsToTokenAddress
+        setIsToTokenAddress,
+        setIsFromToken,
+        setIsFromTokenImg,
+        setIsToToken,
+        setIsToTokenImg
       }}>
 
         <QueryClientProvider client={queryClient}>

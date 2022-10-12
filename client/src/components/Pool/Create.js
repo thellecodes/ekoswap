@@ -17,6 +17,8 @@ import { WalletContext } from "../../context/WalletContext";
 import TokenModal from "../../styled/TokenModal";
 import NavBar from "../Home/NavBar";
 import PriceBox from "./PriceBox";
+import axios from 'axios';
+import { useQuery } from 'react-query';
 
 const Create = () => {
     const {
@@ -33,6 +35,11 @@ const Create = () => {
         setActiveTokenImg,
         isFromTokenImg,
         isToTokenImg,
+        setListedTokens,
+        setIsFromToken,
+        setIsFromTokenImg,
+        setIsToTokenImg,
+        setIsToToken
     } = useContext(WalletContext);
 
     const [tokens, setTokens] = useState(null);
@@ -63,20 +70,34 @@ const Create = () => {
     //     );
     // }
 
-    // const tokensFetchPoint = `https://tokens.coingecko.com/uniswap/all.json`;
-    // const { data, isLoading, error } = useQuery('paths', () =>
-    //     axios.get(`${tokensFetchPoint}`)
-    // );
+    const tokensFetchPoint = `https://tokens.coingecko.com/uniswap/all.json`;
+    const { data, isLoading, error } = useQuery('paths', () =>
+        axios.get(`${tokensFetchPoint}`)
+    );
 
     useEffect(() => {
         // getWalletDetails();
-        // setListedTokens(data?.data)
-        // setTokens(data?.data?.tokens)
-        if (listedTokens) {
-            const { tokens } = listedTokens
-            setTokens(tokens);
+        setListedTokens(data?.data)
+        setTokens(data?.data?.tokens)
+
+        if (data && data.data) {
+            if (data.data.tokens.length > 0) {
+
+                const fromToken = data.data.tokens[0];
+                const toToken = data.data.tokens[1];
+
+                setIsFromToken(fromToken.symbol)
+                setIsFromTokenImg(fromToken.logoURI);
+
+                setIsToToken(toToken.symbol);
+                setIsToTokenImg(toToken.logoURI);
+            }
         }
-    }, [listedTokens])
+        // if (listedTokens) {
+        //     const { tokens } = listedTokens
+        //     setTokens(tokens);
+        // }
+    }, [data])
 
     // const items = new Array(1000).fill().map((value, index) => ({
     //     id: index,
