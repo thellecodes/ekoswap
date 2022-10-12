@@ -16,12 +16,34 @@ const WalletContext = createContext({
     setListedTokens: null,
     isRModalOpen: null,
     openRModal: null,
-    closeRModal: null
+    closeRModal: null,
+    fromAddress: null,
+    toAddress: null,
+    setFromAddress: null,
+    setToAddress: null,
+    setSwitchType: null,
+    switchType: null,
+    activeToken: null,
+    setActiveToken: null,
+    isFromToken: null,
+    isToToken: null,
+    setIsFromToken: null,
+    isFromTokenImg: null,
+    isToTokenImg: null,
+    setIsToTokenImg: null,
+    setIsFromTokenImg: null,
+    isFromTokenAddress: null,
+    isToTokenAddresss: null,
+    setIsFromTokenAddress: null,
+    setIsToTokenAddress: null,
+    setIsToToken: null,
+    activeTokenAddress: null,
+    setActiveTokenAddress: null,
+    activeTokenImg: null,
+    setActiveTokenImg: null
 });
 
 const WalletContextProvider = ({ value, children }) => {
-
-
     return (<WalletContext.Provider value={{ ...value }}>
         {children}
     </WalletContext.Provider>

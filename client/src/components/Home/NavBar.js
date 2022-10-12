@@ -1,4 +1,4 @@
-import { useContext, useState, } from 'react';
+import { useContext, useEffect } from 'react';
 import {
   Flex,
   Image,
@@ -10,10 +10,20 @@ import {
 } from '@chakra-ui/react';
 import { ExternalLink, InternalLink } from "../../styled/Links"
 import { WalletContext } from '../../context/WalletContext';
+import { useQuery } from 'react-query'
+import axios from 'axios';
 
 const NavBar = () => {
-  const { onConnect, account } = useContext(WalletContext);
+  const { onConnect, account, setListedTokens } = useContext(WalletContext);
   const toast = useToast();
+
+  // // fetch listed tokens
+  // const tokensFetchPoint = `https://tokens.coingecko.com/uniswap/all.json`;
+
+  // const { data } = useQuery('tokens', () =>
+  //   axios.get(`${tokensFetchPoint}`)
+  // );
+
 
   const onDisconnect = () => {
     return toast({

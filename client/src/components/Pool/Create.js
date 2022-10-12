@@ -5,19 +5,43 @@ import {
     AvatarGroup,
     Avatar,
     Button,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalCloseButton,
+    ModalBody,
 } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { WalletContext } from "../../context/WalletContext";
+import TokenModal from "../../styled/TokenModal";
 import NavBar from "../Home/NavBar";
 import PriceBox from "./PriceBox";
 
 const Create = () => {
     const {
-        UniswapV3FactoryContract,
-        UniswapV3PeripheryContract,
-        listedTokens
+        listedTokens,
+        isRModalOpen,
+        closeRModal,
+        setFromAddress,
+        setToAddress,
+        setSwitchType,
+        isToToken,
+        isFromToken,
+        setActiveToken,
+        setActiveTokenAddress,
+        setActiveTokenImg,
+        isFromTokenImg,
+        isToTokenImg,
     } = useContext(WalletContext);
+
     const [tokens, setTokens] = useState(null);
+
+    const closeModal = () => {
+        closeRModal();
+        setFromAddress("");
+        setToAddress("");
+    }
 
     // const getWalletDetails = async () => {
     //     const config = {
@@ -27,10 +51,10 @@ const Create = () => {
 
     //     const alchemy = new Alchemy(config);
 
-    //     //Feel free to switch this wallet address with another address
+    //Feel free to switch this wallet address with another address
     //     const ownerAddress = "0x00000000219ab540356cbb839cbe05303d7705fa";
 
-    //     //The below token contract address corresponds to USDT
+    //The below token contract address corresponds to USDT
     //     const tokenContractAddresses = ["0xdAC17F958D2ee523a2206206994597C13D831ec7"];
 
     //     const data = await alchemy.core.getTokenBalances(
@@ -39,14 +63,38 @@ const Create = () => {
     //     );
     // }
 
+    // const tokensFetchPoint = `https://tokens.coingecko.com/uniswap/all.json`;
+    // const { data, isLoading, error } = useQuery('paths', () =>
+    //     axios.get(`${tokensFetchPoint}`)
+    // );
+
     useEffect(() => {
         // getWalletDetails();
+        // setListedTokens(data?.data)
+        // setTokens(data?.data?.tokens)
         if (listedTokens) {
-            const { data } = listedTokens
-            setTokens(data.tokens);
+            const { tokens } = listedTokens
+            setTokens(tokens);
         }
-    }, [])
+    }, [listedTokens])
 
+    // const items = new Array(1000).fill().map((value, index) => ({
+    //     id: index,
+    //     name: faker.name.firstName(5),
+    //     body: faker.lorem.paragraph(8),
+    // }));
+
+    const [token, setToken] = useState("");
+    const closeModalPop = () => closeRModal();
+
+    useEffect(() => {
+        if (token && token != null) {
+            const { name, symbol, address, logoURI } = token
+            setActiveToken(symbol)
+            setActiveTokenAddress(address);
+            setActiveTokenImg(logoURI)
+        }
+    }, [token])
 
     return (
         <Box>
@@ -68,11 +116,13 @@ const Create = () => {
                 <Flex alignItems="center" justifyContent="space-between">
                     <Flex alignItems={"center"}>
                         <AvatarGroup size='sm' max={2} border="unset">
-                            <Avatar name='Eko' bg="ekoswap.silver" src='/assets/eko.png' border="unset" />
-                            <Avatar name='ETH' bg="ekoswap.silver" src='/assets/eth.png' border="unset" />
+                            <Avatar name='Eko' bg="ekoswap.silver" src={isFromTokenImg} border="unset" />
+                            <Avatar name='ETH' bg="ekoswap.silver" src={isToTokenImg} border="unset" />
                         </AvatarGroup>
 
-                        <Flex ml="1rem" fontWeight={"bold"}><Text color="ekoswap.secondary" mr="0.2rem">EKO</Text> - <Text ml="0.2rem">ETH</Text></Flex>
+                        <Flex ml="1rem" fontWeight={"bold"}>
+                            <Text color="ekoswap.secondary" mr="0.2rem">{isFromToken}</Text> -
+                            <Text ml="0.2rem">{isToToken}</Text></Flex>
                     </Flex>
 
                     <Text fontSize="0.8rem" fontWeight={"bold"}>0.3% free tier</Text>
@@ -85,11 +135,12 @@ const Create = () => {
                         position="relative"
                     >
                         <PriceBox
-                            {...{ tokens }}
                             top={"0%"}
                             translateX="0%"
-                            token={"Eko"}
-                            img="eko.png"
+                            token={isFromToken}
+                            img={isFromTokenImg}
+                            action={"from"}
+                            callback={() => setSwitchType("from")}
                         />
 
                         {/* <Box position={"absolute"}
@@ -100,12 +151,13 @@ const Create = () => {
                         </Box> */}
 
                         <PriceBox
-                            {...{ tokens }}
-                            token={"ETH"}
+                            token={isToToken}
                             bottom={"0%"}
-                            img="eth.png"
+                            img={isToTokenImg}
+                            action={"to"}
+                            callback={() => setSwitchType("to")}
                         />
-                        
+
                     </Box>
                 </Flex>
 
@@ -116,9 +168,29 @@ const Create = () => {
                         bg="ekoswap.btnGrad2" color="white"
                         _hover={{ bg: "ekoswap.btnGrad2" }}
                         _active={{ bg: "ekoswap.btnGrad2" }}
+                        onClick={() => { }}
                     >Transact</Button>
                 </Flex>
             </Box>
+
+
+            <Modal isOpen={isRModalOpen} onClose={closeModal}>
+                <ModalOverlay />
+                <ModalContent
+                    mx={{ base: "1.2rem", md: "0.5rem" }}
+                    mt={{ base: "6rem", md: "10rem" }}
+                >
+                    <ModalHeader>
+                        <Text fontSize={"xs"}>Select a token</Text>
+                    </ModalHeader>
+                    <ModalCloseButton />
+
+                    <ModalBody>
+                        <TokenModal {...{ tokens, setToken, closeModalPop }} />
+                    </ModalBody>
+
+                </ModalContent>
+            </Modal>
         </Box>
     )
 }

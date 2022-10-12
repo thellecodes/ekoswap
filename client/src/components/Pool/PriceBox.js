@@ -2,7 +2,7 @@ import { Box, Flex, Text, Avatar, Button, Input } from "@chakra-ui/react";
 import { useContext } from "react";
 import { WalletContext } from "../../context/WalletContext";
 
-const PriceBox = ({ token, img, ...props }) => {
+const PriceBox = ({ img, action, token, callback, ...props }) => {
 
     const { openRModal } = useContext(WalletContext);
 
@@ -27,13 +27,16 @@ const PriceBox = ({ token, img, ...props }) => {
                             <Avatar
                                 size="xs"
                                 name='Token Name'
-                                src='https://assets.coingecko.com/coins/images/14564/thumb/Delta_logo.png'
+                                src={img}
                             />}
                         size="sm"
                         colorScheme='teal'
-                        onClick={openRModal}
+                        onClick={() => {
+                            openRModal()
+                            callback(action)
+                        }}
                     >
-                        <Text color="ekoswap.secondary" size={"sm"}>ETH</Text>
+                        <Text color="ekoswap.secondary" size={"sm"}>{token}</Text>
                     </Button>
                 </Flex>
                 <Box>

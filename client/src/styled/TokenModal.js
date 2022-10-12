@@ -1,29 +1,45 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect } from "react";
+import { FixedSizeList as List } from "react-window";
+import InfiniteLoader from "react-window-infinite-loader";
+import AutoSizer from "react-virtualized-auto-sizer"
 import {
     Box,
+    Input,
     Text,
-    UnorderedList,
-    ListItem,
-    Flex,
     Avatar,
-    Input
+    Flex,
+    Button
 } from "@chakra-ui/react"
-import { WalletContext } from '../context/WalletContext';
 
-const TokenModal = () => {
-    const [tokens, setTokens] = useState(null);
-    const { listedTokens } = useContext(WalletContext);
-
-    useEffect(() => {
-        if (listedTokens) {
-            const { data } = listedTokens;
-            let allTokens = data.tokens;
-            setTokens(allTokens);
-        }
-    }, [])
+const Row = ({ data, index, style, setToken, closeModalPop }) => {
+    const { logoURI, name } = data[index]
 
     return (
-        <Box>
+        <Flex {...{ style }} alignItems={"center"} cursor="pointer" mb={"2"}>
+
+            <Avatar
+                size="xs"
+                name='Token Name'
+                src={logoURI}
+            />
+            <Button onClick={() => {
+                closeModalPop()
+                setToken(data[index])
+            }} ml="3" bg="none" padding={"2"} border="none"
+                _active={{
+                    bg: "unset"
+                }}
+            >
+                <Text mb="1.5" mt="2" fontWeight={"medium"} alignItems="center">{name}</Text>
+            </Button>
+        </Flex>
+    );
+}
+
+const TokenModal = ({ tokens, setToken, closeModalPop }) => {
+
+    return (
+        <Box height={300} overflow="hidden">
             <Box mb="20px">
                 <Input
                     placeholder='Search Tokens...'
@@ -33,26 +49,37 @@ const TokenModal = () => {
                     }}
                 />
             </Box>
-            <Box height={"300px"} overflowY="scroll">
-                <UnorderedList listStyleType={"none"}>
-                    {tokens ? tokens.map(({ address, symbol, logoURI }, key) => (
-                        <ListItem cursor={"pointer"}
-                            {...{ key }}>
-                            <Flex alignItems={"center"}>
-                                <Avatar
-                                    size="xs"
-                                    name='Token Name'
-                                    src={logoURI}
-                                />
-                                <Text mb="1.5" ml="2" fontWeight={"medium"}> {symbol} </Text>
-                            </Flex>
-                        </ListItem>
-                    )) : null}
-                </UnorderedList>
-            </Box>
-
+            {tokens && tokens.length > 0 ?
+                <AutoSizer>
+                    {({ width }) => (
+                        <InfiniteLoader
+                            itemCount={tokens.length}
+                            isItemLoaded={() => null}
+                            loadMoreItems={() => null}
+                        >
+                            {({ onItemsRendered, ref }) => (
+                                <>
+                                    <List
+                                        className="List"
+                                        height={200}
+                                        width={width}
+                                        itemCount={tokens.length}
+                                        itemSize={40}
+                                        itemData={tokens}
+                                        onItemsRendered={onItemsRendered}
+                                        ref={ref}
+                                    >
+                                        {({ data, index, style }) => <Row {...{ data, index, style, setToken, closeModalPop }} />}
+                                    </List>
+                                </>
+                            )}
+                        </InfiniteLoader>
+                    )}
+                </AutoSizer>
+                : null}
         </Box>
-    )
+    );
 }
+
 
 export default TokenModal;
