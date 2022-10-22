@@ -40,7 +40,21 @@ const WalletContext = createContext({
     activeTokenAddress: null,
     setActiveTokenAddress: null,
     activeTokenImg: null,
-    setActiveTokenImg: null
+    setActiveTokenImg: null,
+    isFromTokenDecimal: null,
+    isToTokenDecimal: null,
+    setIsFromTokenDecimal: null,
+    setIsToTokenDecimal: null,
+    UniswapV3FactoryContract: null,
+    UniswapV3PeripheryContract: null,
+    ekoTokenAddress: null,
+    token1Address: null,
+    WETH9Address: null,
+    ETHAddress: null,
+    USDTAddress: null,
+    USDCAddress: null,
+    DAIAddress: null,
+    AAVEAddress: null,
 });
 
 const WalletContextProvider = ({ value, children }) => {

@@ -44,17 +44,21 @@ function App() {
   const [isToTokenImg, setIsToTokenImg] = useState("");
   const [isFromTokenAddress, setIsFromTokenAddress] = useState("");
   const [isToTokenAddresss, setIsToTokenAddress] = useState("");
+  const [isFromTokenDecimal, setIsFromTokenDecimal] = useState("");
+  const [isToTokenDecimal, setIsToTokenDecimal] = useState("");
   const toast = useToast();
 
-  // EkoToken Contract Address 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
-  // Token1 Contract Address 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
-  // WETH9 Contract Address 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
-
-  // Uniswap Factory Contract Address 0x0165878A594ca255338adfa4d48449f69242Eb8F
-  const UniswapV3FactoryContractAddress = `0x0165878A594ca255338adfa4d48449f69242Eb8F`;
-
-  // Uniswap periphery Contract Address 0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6
-  const UniswapV3PeripheryAddress = `0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6`;
+  const UniswapV3FactoryContractAddress = `0x2f95117796a59f06d429C732a61A129ec74C7E51`;
+  const SwapRouterContractAddress = `0xed79A395B066990f36e162c311BB24E9c9E834c5`;
+  const nonFungiblePositionManagerContractAddress = ``;
+  const ekoTokenAddress = `0x2Bed0a7F2F227FE901D5e2bf2d5E73bfe6C09b3C`;
+  const token1Address = `0xA80e52044311BCA5BEDC5A3462374f9A5aD87c43`;
+  const WETH9Address = `0x9E106a9eaF162aa1d8A8718b0192202D48C98E8d`;
+  const ETHAddress = `0xe700b2c6184583c7e8863970dd128d680f751a09`;
+  const USDTAddress = `0xC2C527C0CACF457746Bd31B2a698Fe89de2b6d49`;
+  const USDCAddress = `0xa2025b15a1757311bfd68cb14eaefcc237af5b43`;
+  const DAIAddress = `0xDF1742fE5b0bFc12331D8EAec6b478DfDbD31464`;
+  const AAVEAddress = `0x63242B9Bd3C22f18706d5c4E627B4735973f1f07`;
 
   const {
     isOpen: isRModalOpen,
@@ -177,17 +181,17 @@ function App() {
     });
   }, []);
 
-  const UniswapV3FactoryContract = new ethers.Contract(
-    UniswapV3FactoryContractAddress,
-    FactoryAbi.abi,
-    signer
-  );
+  // const UniswapV3FactoryContract = new ethers.Contract(
+  //   UniswapV3FactoryContractAddress,
+  //   FactoryAbi.abi,
+  //   signer
+  // );
 
-  const UniswapV3PeripheryContract = new ethers.Contract(
-    UniswapV3PeripheryAddress,
-    PeripheryAbi.abi,
-    signer
-  );
+  // const UniswapV3PeripheryContract = new ethers.Contract(
+  //   UniswapV3PeripheryAddress,
+  //   PeripheryAbi.abi,
+  //   signer
+  // );
 
   return (
     <ChakraProvider {...{ theme }}>
@@ -198,8 +202,8 @@ function App() {
         signer,
         ethAddress,
         onConnect,
-        UniswapV3FactoryContract,
-        UniswapV3PeripheryContract,
+        UniswapV3FactoryContract: null,
+        UniswapV3PeripheryContract: null,
         listedTokens,
         setListedTokens,
         isRModalOpen,
@@ -228,7 +232,19 @@ function App() {
         setIsFromToken,
         setIsFromTokenImg,
         setIsToToken,
-        setIsToTokenImg
+        setIsToTokenImg,
+        isFromTokenDecimal,
+        isToTokenDecimal,
+        setIsFromTokenDecimal,
+        setIsToTokenDecimal,
+        ekoTokenAddress,
+        token1Address,
+        WETH9Address,
+        ETHAddress,
+        USDCAddress,
+        USDTAddress,
+        DAIAddress,
+        AAVEAddress
       }}>
 
         <QueryClientProvider client={queryClient}>

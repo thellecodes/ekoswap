@@ -41,6 +41,10 @@ const Home = () => {
     },
   ];
 
+  const getPool = (token0, token1) => {
+
+  }
+
   return (
     <Box paddingBottom={'50vh'}>
       <NavBar />

@@ -10,7 +10,7 @@ import './interfaces/INonfungiblePositionManager.sol';
 import './interfaces/INonfungibleTokenPositionDescriptor.sol';
 import './interfaces/IERC20Metadata.sol';
 import './libraries/PoolAddress.sol';
-import './libraries/NFTDescriptor.sol';
+import '@uniswap/v3-periphery/contracts/libraries/NFTDescriptor.sol';
 import './libraries/TokenRatioSortOrder.sol';
 
 /// @title Describes NFT token positions

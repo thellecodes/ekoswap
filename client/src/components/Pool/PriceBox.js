@@ -1,12 +1,20 @@
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Box, Flex, Text, Avatar, Button, Input } from "@chakra-ui/react";
-import { useContext } from "react";
 import { WalletContext } from "../../context/WalletContext";
 
-const PriceBox = ({ img, action, token, callback, ...props }) => {
-
+const PriceBox = ({
+    img,
+    action,
+    token,
+    callback,
+    onblur,
+    onchange,
+    defaultvalue,
+    ...props }) => {
     const { openRModal } = useContext(WalletContext);
 
-    return (<Box position={"absolute"}
+    return (<Box
+        position={"absolute"}
         {...props}
         borderWidth={"2px"}
         border="1px solid #A6A9CA"
@@ -45,11 +53,15 @@ const PriceBox = ({ img, action, token, callback, ...props }) => {
                         boxShadow="none"
                         textAlign={"end"}
                         _focus={{ boxShadow: "none" }}
-                        defaultValue="$30.22"
                         color="black"
                         fontWeight={"bold"}
-                        placeholder="$30.22"
+                        placeholder={"0"}
                         padding={"unset"}
+                        onBlur={onblur}
+                        type="text"
+                        onChange={onchange}
+                        defaultValue={defaultvalue}
+                        value={defaultvalue}
                     />
                 </Box>
             </Flex>
