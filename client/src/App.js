@@ -16,8 +16,11 @@ import { RModalContextProvider } from './context/RModalContext';
 import PageLoader from './components/PageLoader';
 
 //contract abis
-import FactoryAbi from "./contracts/core/UniswapV3Factory.sol/UniswapV3Factory.json"
-import PeripheryAbi from "./contracts/periphery/SwapRouter.sol/SwapRouter.json"
+import FactoryAbi from "./contracts/core/UniswapV2Factory.sol/UniswapV2Factory.json";
+import PeripheryAbi from "./contracts/periphery/UniswapV2Router02.sol/UniswapV2Router02.json";
+import EkodexAbi from "./contracts/Ekodex.sol/Ekodex.json";
+
+//components
 import Create from './components/Pool/Create';
 import Swap from "./components/Swap/Swap";
 import Home from "./components/Home/Home";
@@ -48,17 +51,17 @@ function App() {
   const [isToTokenDecimal, setIsToTokenDecimal] = useState("");
   const toast = useToast();
 
-  const UniswapV3FactoryContractAddress = `0x2f95117796a59f06d429C732a61A129ec74C7E51`;
-  const SwapRouterContractAddress = `0xed79A395B066990f36e162c311BB24E9c9E834c5`;
-  const nonFungiblePositionManagerContractAddress = ``;
+  const UniswapV2FactoryContractAddress = `0x6095eEC7388092e14A19e6E4619F6B3b70Ce7827`;
+  const UniswapV2PeripheryContractAddress = `0x49238E4c6588390257D816Cee4c9088CCaB91cCf`;
   const ekoTokenAddress = `0x2Bed0a7F2F227FE901D5e2bf2d5E73bfe6C09b3C`;
   const token1Address = `0xA80e52044311BCA5BEDC5A3462374f9A5aD87c43`;
-  const WETH9Address = `0x9E106a9eaF162aa1d8A8718b0192202D48C98E8d`;
+  const WETH9Address = `0x6bd991BbDd8E18dc15995D68D7b9Ce320cd8eAA1`;
   const ETHAddress = `0xe700b2c6184583c7e8863970dd128d680f751a09`;
   const USDTAddress = `0xC2C527C0CACF457746Bd31B2a698Fe89de2b6d49`;
   const USDCAddress = `0xa2025b15a1757311bfd68cb14eaefcc237af5b43`;
   const DAIAddress = `0xDF1742fE5b0bFc12331D8EAec6b478DfDbD31464`;
   const AAVEAddress = `0x63242B9Bd3C22f18706d5c4E627B4735973f1f07`;
+  const EkodexAddress = `0xBC0B9eC6c268679f1E7F325126638c23bA5A4E99`;
 
   const {
     isOpen: isRModalOpen,
@@ -181,17 +184,23 @@ function App() {
     });
   }, []);
 
-  // const UniswapV3FactoryContract = new ethers.Contract(
-  //   UniswapV3FactoryContractAddress,
-  //   FactoryAbi.abi,
-  //   signer
-  // );
+  const UniswapV2FactoryContract = new ethers.Contract(
+    UniswapV2FactoryContractAddress,
+    FactoryAbi.abi,
+    signer
+  );
 
-  // const UniswapV3PeripheryContract = new ethers.Contract(
-  //   UniswapV3PeripheryAddress,
-  //   PeripheryAbi.abi,
-  //   signer
-  // );
+  const UniswapV3PeripheryContract = new ethers.Contract(
+    UniswapV2PeripheryContractAddress,
+    PeripheryAbi.abi,
+    signer
+  );
+
+  const EkodexContract = new ethers.Contract(
+    EkodexAddress,
+    EkodexAbi.abi,
+    signer
+  );
 
   return (
     <ChakraProvider {...{ theme }}>
@@ -202,8 +211,8 @@ function App() {
         signer,
         ethAddress,
         onConnect,
-        UniswapV3FactoryContract: null,
-        UniswapV3PeripheryContract: null,
+        UniswapV2FactoryContract,
+        UniswapV3PeripheryContract,
         listedTokens,
         setListedTokens,
         isRModalOpen,
@@ -244,9 +253,10 @@ function App() {
         USDCAddress,
         USDTAddress,
         DAIAddress,
-        AAVEAddress
+        AAVEAddress,
+        EkodexAddress,
+        EkodexContract
       }}>
-
         <QueryClientProvider client={queryClient}>
           <RModalContextProvider value={{ isRModalOpen, openRModal, closeRModal }} >
             <Router>

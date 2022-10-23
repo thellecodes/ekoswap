@@ -17,6 +17,7 @@
     "morgan": "~1.9.1"
   },
   "devDependencies": {
+    "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "hardhat": "^2.11.2"
   }
 }

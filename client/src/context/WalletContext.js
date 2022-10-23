@@ -45,8 +45,8 @@ const WalletContext = createContext({
     isToTokenDecimal: null,
     setIsFromTokenDecimal: null,
     setIsToTokenDecimal: null,
-    UniswapV3FactoryContract: null,
-    UniswapV3PeripheryContract: null,
+    UniswapV2FactoryContract: null,
+    UniswapV2PeripheryContract: null,
     ekoTokenAddress: null,
     token1Address: null,
     WETH9Address: null,
@@ -55,6 +55,8 @@ const WalletContext = createContext({
     USDCAddress: null,
     DAIAddress: null,
     AAVEAddress: null,
+    EkodexAddress: null,
+    EkodexContract: null 
 });
 
 const WalletContextProvider = ({ value, children }) => {

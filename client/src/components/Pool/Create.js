@@ -21,6 +21,7 @@ import PriceBox from "./PriceBox";
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import qs from 'qs';
+import { ethers } from "ethers";
 
 const Create = () => {
     const {
@@ -50,10 +51,11 @@ const Create = () => {
         setIsFromTokenDecimal,
         setIsToTokenDecimal,
         account,
-        UniswapV3FactoryContract,
+        UniswapV2FactoryContract,
         ekoTokenAddress,
         WETH9Address,
-        ETHAddress
+        ETHAddress,
+        EkodexContract
     } = useContext(WalletContext);
     const toast = useToast();
 
@@ -77,14 +79,14 @@ const Create = () => {
 
         const quotePoint = `https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`;
 
-        if (fromValue > 0) {
-            // Fetch the swap price.
-            const res = await fetch(`${quotePoint}`);
-            const swapQuoteJSON = await res.json();
+        // if (fromValue > 0) {
+        //     // Fetch the swap price.
+        //     const res = await fetch(`${quotePoint}`);
+        //     const swapQuoteJSON = await res.json();
 
-            const conversion = Number(swapQuoteJSON.buyAmount / (10 ** isToTokenDecimal));
-            setToInputValue(conversion);
-        }
+        //     const conversion = Number(swapQuoteJSON.buyAmount / (10 ** isToTokenDecimal));
+        //     setToInputValue(conversion);
+        // }
     }
 
     // const getWalletDetails = async () => {
@@ -160,10 +162,21 @@ const Create = () => {
     }, [token])
 
     const onCreate = async () => {
-        const createPool = await UniswapV3FactoryContract.createPool(`${ekoTokenAddress}`, `${ETHAddress}`);
-        const trx = await createPool.wait();
+        // creates the pool
+        const createPool = await EkodexContract.createPool(`${ekoTokenAddress}`, `${ETHAddress}`);
+        await createPool.wait();
 
-        console.log(trx);
+        const amount = ethers.utils.formatEther(10000) * 10 ** 18;
+
+        // adds liquidity to the pool
+        const addLQ = await EkodexContract.addLiquidity(`${ekoTokenAddress}`, `${ETHAddress}`,
+            amount,
+            amount,
+            0,
+            0,
+            `${account}`
+        )
+        await addLQ.wait();
 
         toast({
             title: 'Pool Created',
@@ -223,7 +236,6 @@ const Create = () => {
                                     img={isFromTokenImg}
                                     action={"from"}
                                     callback={() => setSwitchType("from")}
-                                    onblur={getPrice}
                                     onchange={e => setFromInputValue(e.target.value)}
                                     defaultvalue={fromValue}
                                 />
