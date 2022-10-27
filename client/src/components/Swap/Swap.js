@@ -1,302 +1,293 @@
-import { useContext } from 'react'
+import React, { useContext, useEffect, useState } from "react";
 import {
-  Box, Text, Flex, Input, Avatar, Button,
-  Select
-} from '@chakra-ui/react';
-import { RiArrowDropDownLine } from 'react-icons/ri';
-import { GiVerticalFlip } from 'react-icons/gi';
-import NavBar from '../Home/NavBar';
-import TopHero from '../Home/TopHero';
-
-/*Contexts*/
-import { RModalContext } from '../../context/RModalContext';
+  Box,
+  Flex,
+  Text,
+  AvatarGroup,
+  Avatar,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  useToast
+} from "@chakra-ui/react";
+import { WalletContext } from "../../context/WalletContext";
+import TokenModal from "../../styled/TokenModal";
+import NavBar from "../Home/NavBar";
+import axios from 'axios';
+import { useQuery } from 'react-query';
+import { ethers } from "ethers";
+import PriceBox from "../Pool/PriceBox";
 
 const Swap = () => {
+  const {
+    isRModalOpen,
+    closeRModal,
+    setFromAddress,
+    setToAddress,
+    setSwitchType,
+    isToToken,
+    isFromToken,
+    setActiveToken,
+    setActiveTokenAddress,
+    setActiveTokenImg,
+    isFromTokenImg,
+    isToTokenImg,
+    setIsFromToken,
+    setIsFromTokenImg,
+    setIsToTokenImg,
+    setIsToToken,
+    setIsFromTokenAddress,
+    setIsToTokenAddress,
+    setIsFromTokenDecimal,
+    setIsToTokenDecimal,
+    account,
+    ekoTokenAddress,
+    ETHAddress,
+    EkodexContract,
+    tokens,
+  } = useContext(WalletContext);
+  const toast = useToast();
 
-  const { isRModalOpen, openRModal, closeRModal } = useContext(RModalContext)
+  const [fromValue, setFromInputValue] = useState("0");
+  const [toValue, setToInputValue] = useState("0");
 
-  const selectToken = () => { }
+  const closeModal = () => {
+    closeRModal();
+    setFromAddress("");
+    setToAddress("");
+  }
+
+  // async function getPrice() {
+  //     const params = {
+  //         sellToken: isFromTokenAddress,
+  //         buyToken: isToTokenAddresss,
+  //         sellAmount: Number(fromValue * 10 ** isFromTokenDecimal),
+  //         account
+  //     }
+
+  //     const quotePoint = `https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`;
+
+  // if (fromValue > 0) {
+  //     // Fetch the swap price.
+  //     const res = await fetch(`${quotePoint}`);
+  //     const swapQuoteJSON = await res.json();
+
+  //     const conversion = Number(swapQuoteJSON.buyAmount / (10 ** isToTokenDecimal));
+  //     setToInputValue(conversion);
+  // }
+  // }
+
+  // const getWalletDetails = async () => {
+  //     const config = {
+  //         apiKey: "3EX4KTEQy3RZlqHscYjlGD8iG7J6MA7D",
+  //         network: Network.ETH_MAINNET,
+  //     };
+
+  //     const alchemy = new Alchemy(config);
+
+  //Feel free to switch this wallet address with another address
+  //     const ownerAddress = "0x00000000219ab540356cbb839cbe05303d7705fa";
+
+  //The below token contract address corresponds to USDT
+  //     const tokenContractAddresses = ["0xdAC17F958D2ee523a2206206994597C13D831ec7"];
+
+  //     const data = await alchemy.core.getTokenBalances(
+  //         ownerAddress,
+  //         tokenContractAddresses
+  //     );
+  // }
+
+  const tokensFetchPoint = `https://tokens.coingecko.com/uniswap/all.json`;
+  const { data, isLoading, error } = useQuery('paths', () =>
+    axios.get(`${tokensFetchPoint}`)
+  );
+
+  useEffect(() => {
+    if (tokens) {
+      const fromToken = tokens[0];
+      const toToken = tokens[1];
+
+      //image and symbol
+      setIsFromToken(fromToken.symbol)
+      setIsFromTokenImg(fromToken.logoURI);
+
+      setIsToToken(toToken.symbol);
+      setIsToTokenImg(toToken.logoURI);
+
+      //set contract addresses
+      setIsFromTokenAddress("0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2");
+      setIsToTokenAddress("0x6b175474e89094c44da98b954eedeac495271d0f");
+
+      //set token decimals
+      setIsFromTokenDecimal(fromToken.decimals)
+      setIsToTokenDecimal(toToken.decimals);
+    }
+
+  }, [tokens])
+
+  // const items = new Array(1000).fill().map((value, index) => ({
+  //     id: index,
+  //     name: faker.name.firstName(5),
+  //     body: faker.lorem.paragraph(8),
+  // }));
+
+  const [token, setToken] = useState("");
+  const closeModalPop = () => closeRModal();
+
+  useEffect(() => {
+    if (token && token != null) {
+      const { symbol, address, logoURI } = token
+      setActiveToken(symbol)
+      setActiveTokenAddress(address);
+      setActiveTokenImg(logoURI)
+    }
+  }, [token])
+
+  const onCreate = async () => {
+    const amount = ethers.utils.formatEther(10000) * 10 ** 18;
+
+    // creates the pool
+    try {
+      const createPool = await EkodexContract.createPool(`${ekoTokenAddress}`, `${ETHAddress}`);
+      await createPool.wait();
+
+      // adds liquidity to the pool
+      const addLQ = await EkodexContract.addLiquidity(`${ekoTokenAddress}`, `${ETHAddress}`,
+        amount,
+        amount,
+        0,
+        0,
+        `${account}`
+      )
+      await addLQ.wait();
+
+      toast({
+        title: 'Swap',
+        description: "Pair Pool has been created",
+        status: 'success',
+        duration: 3000,
+        variant: 'solid',
+        position: 'top-right',
+      });
+
+    } catch ({ message }) {
+      toast({
+        title: 'Pool is already created',
+        description: "Pair pool already exists",
+        status: 'error',
+        duration: 3000,
+        variant: 'solid',
+        position: 'top-right',
+      });
+    }
+  }
 
   return (
-    <Box w="full" h="100vh" bg="ekoswap.primary">
+    <Box>
       <NavBar />
-      <TopHero type={''} path="swap" />
-
       <Box
-        w={{ base: '100%' }}
-        px={{ base: '2rem', md: '4rem' }}
-        left={{ base: '0%', lg: '9%' }}
-        maxW="1250px"
-        minW="20rem"
-        mx="auto"
+        mt={{ base: "10rem", md: "9rem" }}
+        mx={{ base: "1rem", md: "auto" }}
+        px={{ base: '1rem', md: '1.5rem' }}
+        py={{ base: '1rem', md: '1.5rem' }}
+        maxW="600px"
+        borderRadius={{
+          base: "7px",
+          md: "15px"
+        }}
+        bg="white"
       >
-        <Box
-          maxW={{ base: "100%", lg: "55%" }}
-          px={{ base: '0.5rem', md: '1rem' }}
-          py={{ base: '1rem' }}
-          bgGradient="linear(to-r, #402B40, #26A17B)"
-          borderRadius={'1.6rem'}
-          mx="auto"
-        >
-          <Text
-            color="white"
-            fontSize={'20px'}
-            fontWeight="bold"
-            mb="1rem"
-            userSelect={'none'}
-          >
-            Swap
-          </Text>
+        <Text align={"end"} color="ekoswap.secondary" mb="3" fontWeight={"bold"}> Swap</Text>
+        {isLoading && !error ? <Text>Loading...</Text> : null}
 
-          <Flex flexDirection={'column'}>
-            <Flex
-              flex="1"
-              direction={'column'}
-              maxH="300px"
-              position={'relative'}
-            >
-              <Flex
-                flex="1"
-                mb="0.3rem"
-                bg="black"
-                justifyContent={'space-between'}
-                alignItems="center"
-                px={{ base: '0.5rem', md: '0.8rem' }}
-                borderRadius="0.5rem"
-                py="0.8rem"
-              >
-                <Box>
+        {!error && !isLoading ?
+          <>
+            <Flex alignItems="center" justifyContent="space-between">
+              <Flex alignItems={"center"}>
+                <AvatarGroup size='sm' max={2} border="unset">
+                  <Avatar name='Eko' bg="ekoswap.silver" src={isFromTokenImg} border="unset" />
+                  <Avatar name='ETH' bg="ekoswap.silver" src={isToTokenImg} border="unset" />
+                </AvatarGroup>
 
-                  <Flex
-                    cursor={'pointer'}
-                    rounded="full"
-                    py="0.4rem"
-                    background={'#394B50'}
-                    alignItems="center"
-                    _hover={{
-                      background: '#3F2F42',
-                    }}
-                    px="0.5rem"
-                    justifyContent="space-between"
-                  >
-                    <Avatar
-                      name="EKO"
-                      src="/assets/eko.png"
-                      border={'unset'}
-                      bg="ekoswap.silver"
-                      size="xs"
-                    />
-                    <Flex
-                      ml="0.5rem"
-                      color="white"
-                      alignItems={'center'}
-                      fontWeight="bold"
-                    >
-                      <select>
-                        {["BTC", "ETH", "EKO"].map((_, key) => (
-                          <option value='option1' style={{
-                            backgroundColor: "#394B50",
-                            fontSize: "xs",
-                          }}><Text key={key}>{_}</Text></option>
-                        ))}
-                      </select>
-
-                    </Flex>
-                  </Flex>
-
-                </Box>
-                <Flex flexDir="column" alignItems={'flex-end'}>
-                  <Box>
-                    <Text color="white" fontWeight={'bold'} fontSize="0.5rem">
-                      ~$45.07
-                    </Text>
-                  </Box>
-                  <Box paddingLeft={'1rem'}>
-                    <Input
-                      placeholder="0.00"
-                      value={'20.203'}
-                      color="white"
-                      fontWeight={'bold'}
-                      textAlign="end"
-                      borderWidth="unset"
-                      focusBorderColor="unset"
-                      border="unset"
-                      outline={'unset'}
-                      shadow="unset"
-                      fontSize={{
-                        base: '0.9rem',
-                        md: '1.3rem',
-                      }}
-                      padding={'unset'}
-                    />
-                  </Box>
-                </Flex>
+                <Flex ml="1rem" fontWeight={"bold"}>
+                  <Text color="ekoswap.secondary" mr="0.2rem">{isFromToken}</Text> -
+                  <Text ml="0.2rem">{isToToken}</Text></Flex>
               </Flex>
 
-              <Flex
-                flex="1"
-                mb="0.3rem"
-                bg="black"
-                justifyContent={'space-between'}
-                alignItems="center"
-                px={{ base: '0.5rem', md: '0.8rem' }}
-                borderRadius="0.5rem"
-                py="0.8rem"
-              >
-                <Box>
-                  <Button
-                    padding={"unset"}
-                    margin="unset"
-                    bg="unset"
-                    _hover={"unset"}
-                    _active="unset"
-                    _focus={"unset"}
-                  >
-                    <Flex
-                      cursor={'pointer'}
-                      rounded="full"
-                      py="0.4rem"
-                      background={'#394B50'}
-                      alignItems="center"
-                      _hover={{ background: '#3F2F42' }}
-                      px="0.5rem"
-                      justifyContent="space-between"
-                    >
-                      <Avatar
-                        name="EKO"
-                        src="/assets/eko.png"
-                        border={'unset'}
-                        bg="ekoswap.silver"
-                        size={'xs'}
-                      />
-                      <Flex
-                        ml="0.5rem"
-                        color="white"
-                        alignItems={'center'}
-                        fontWeight="bold"
-                      >
-                        <select>
-                          {["BTC", "ETH", "EKO"].map((_, key) => (
-                            <option value='option1' style={{
-                              backgroundColor: "#394B50",
-                              fontSize: "xs",
-                            }}><Text key={key}>{_}</Text></option>
-                          ))}
-                        </select>
-                     
-                      </Flex>
-                    </Flex>
-                  </Button>
-                  <Flex alignItems={'center'} margin="unset" padding={"unset"}>
-                    <Text
-                      color="white"
-                      fontWeight={'normal'}
-                      fontSize="0.5rem"
-                      whiteSpace={'nowrap'}
-                    >
-                      In Wallet: 22ETH
-                    </Text>
-                    <Button
-                      padding={'unset'}
-                      bg="unset"
-                      _hover={'unset'}
-                      _active="unset"
-                      fontSize="0.4rem"
-                    >
-                      <Text color={'ekoswap.secondary'}>(Max)</Text>
-                    </Button>
-                  </Flex>
-                </Box>
-                <Flex flexDir="column" alignItems={'flex-end'}>
-                  <Box>
-                    <Text color="white" fontWeight={'bold'} fontSize="0.5rem">
-                      ~$45.07
-                    </Text>
-                  </Box>
-                  <Box paddingLeft={'1rem'}>
-                    <Input
-                      placeholder="0.00"
-                      value={'20.203'}
-                      color="white"
-                      fontWeight={'bold'}
-                      textAlign="end"
-                      borderWidth="unset"
-                      focusBorderColor="unset"
-                      border="unset"
-                      outline={'unset'}
-                      shadow="unset"
-                      fontSize={{
-                        base: '0.9rem',
-                        md: '1.3rem',
-                      }}
-                      padding={'unset'}
-                    />
-                  </Box>
-                </Flex>
-              </Flex>
-
-              <Flex position={'absolute'} top="35%" left={'43%'} zIndex="10">
-                <Button
-                  bg="ekoswap.silver"
-                  color="white"
-                  fontWeight={'bold'}
-                  fontSize="1rem"
-                  outline="none"
-                  border={'none'}
-                  shadow="unset"
-                  _focus={'unset'}
-                  _active="unset"
-                  _hover={'unset'}
-                  py="0.5rem"
-                >
-                  <Text>
-                    <GiVerticalFlip color="black" />
-                  </Text>
-                </Button>
-              </Flex>
+              <Text fontSize="0.8rem" fontWeight={"bold"}>0.3% free tier</Text>
             </Flex>
 
-            <Flex
-              px={{ base: '0.5rem', md: '0.8rem' }}
-              py={{ base: '0.5rem', md: '0.8rem' }}
-              bg="black"
-              borderRadius={'0.5rem'}
-              justifyContent={'space-between'}
-              color="white"
-              fontWeight={'bold'}
-              fontSize={'0.8rem'}
-            >
-              <Text>1 USDT</Text>
-              <Text>=</Text>
-              <Text>0.005ETH</Text>
+            <Flex my={"1rem"} direction={"column"}>
+              <Box
+                height={{ base: "180px", md: "200px" }}
+                position="relative"
+              >
+                <PriceBox
+                  top={"0%"}
+                  translateX="0%"
+                  token={isFromToken}
+                  img={isFromTokenImg}
+                  action={"from"}
+                  callback={() => setSwitchType("from")}
+                  onchange={e => setFromInputValue(e.target.value)}
+                  defaultvalue={`${1000}`}
+                />
+
+                {/* <Box position={"absolute"}
+                            top="43%"
+                            width={"100%"}
+                        >
+                            <Text textAlign={"center"}>Flip</Text>
+                        </Box> */}
+                <PriceBox
+                  defaultvalue={`${1000}`}
+                  token={isToToken}
+                  bottom={"0%"}
+                  img={isToTokenImg}
+                  action={"to"}
+                  callback={() => setSwitchType("to")}
+                  onchange={e => setToInputValue(e.target.value)}
+                />
+
+              </Box>
             </Flex>
 
-            <Flex mt="1rem">
+            <Flex alignItems={"center"} justifyContent="center" mt="2rem">
               <Button
-                w="full"
-                variant="outline"
-                bg="ekoswap.secondary"
-                color="white"
-                fontWeight={'bold'}
-                fontSize="1.3rem"
-                outline="none"
-                border={'none'}
-                shadow="unset"
-                _focus={'unset'}
-                _active="unset"
-                _hover={'unset'}
-                py="1rem"
-              >
-                Swap
-              </Button>
+                width={"300px"}
+                maxW={"366px"}
+                bg="ekoswap.btnGrad2" color="white"
+                _hover={{ bg: "ekoswap.btnGrad2" }}
+                _active={{ bg: "ekoswap.btnGrad2" }}
+                onClick={onCreate}
+              >Transact</Button>
             </Flex>
-          </Flex>
-        </Box>
-
-
+          </> : <Text>Feeds Faild to Load</Text>}
       </Box>
-    </Box >
-  );
-};
+
+      <Modal isOpen={isRModalOpen} onClose={closeModal}>
+        <ModalOverlay />
+        <ModalContent
+          mx={{ base: "1.2rem", md: "0.5rem" }}
+          mt={{ base: "6rem", md: "10rem" }}
+        >
+          <ModalHeader>
+            <Text fontSize={"xs"}>Select a token</Text>
+          </ModalHeader>
+          <ModalCloseButton />
+
+          <ModalBody>
+            <TokenModal {...{ tokens, setToken, closeModalPop }} />
+          </ModalBody>
+
+        </ModalContent>
+      </Modal>
+    </Box>
+  )
+}
 
 export default Swap;

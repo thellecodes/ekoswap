@@ -25,6 +25,9 @@ import Create from './components/Pool/Create';
 import Swap from "./components/Swap/Swap";
 import Home from "./components/Home/Home";
 
+// tokens
+import tokens from "./tokens";
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -255,7 +258,8 @@ function App() {
         DAIAddress,
         AAVEAddress,
         EkodexAddress,
-        EkodexContract
+        EkodexContract,
+        tokens
       }}>
         <QueryClientProvider client={queryClient}>
           <RModalContextProvider value={{ isRModalOpen, openRModal, closeRModal }} >

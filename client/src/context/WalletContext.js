@@ -56,7 +56,7 @@ const WalletContext = createContext({
     DAIAddress: null,
     AAVEAddress: null,
     EkodexAddress: null,
-    EkodexContract: null 
+    EkodexContract: null
 });
 
 const WalletContextProvider = ({ value, children }) => {

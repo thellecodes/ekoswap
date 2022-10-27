@@ -20,7 +20,6 @@ import NavBar from "../Home/NavBar";
 import PriceBox from "./PriceBox";
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import qs from 'qs';
 import { ethers } from "ethers";
 
 const Create = () => {
@@ -37,29 +36,22 @@ const Create = () => {
         setActiveTokenImg,
         isFromTokenImg,
         isToTokenImg,
-        setListedTokens,
         setIsFromToken,
         setIsFromTokenImg,
         setIsToTokenImg,
         setIsToToken,
-        isToTokenAddresss,
-        isFromTokenAddress,
         setIsFromTokenAddress,
         setIsToTokenAddress,
-        isFromTokenDecimal,
-        isToTokenDecimal,
         setIsFromTokenDecimal,
         setIsToTokenDecimal,
         account,
-        UniswapV2FactoryContract,
         ekoTokenAddress,
-        WETH9Address,
         ETHAddress,
-        EkodexContract
+        EkodexContract,
+        tokens,
     } = useContext(WalletContext);
     const toast = useToast();
 
-    const [tokens, setTokens] = useState(null);
     const [fromValue, setFromInputValue] = useState("0");
     const [toValue, setToInputValue] = useState("0");
 
@@ -69,25 +61,25 @@ const Create = () => {
         setToAddress("");
     }
 
-    async function getPrice() {
-        const params = {
-            sellToken: isFromTokenAddress,
-            buyToken: isToTokenAddresss,
-            sellAmount: Number(fromValue * 10 ** isFromTokenDecimal),
-            account
-        }
+    // async function getPrice() {
+    //     const params = {
+    //         sellToken: isFromTokenAddress,
+    //         buyToken: isToTokenAddresss,
+    //         sellAmount: Number(fromValue * 10 ** isFromTokenDecimal),
+    //         account
+    //     }
 
-        const quotePoint = `https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`;
+    //     const quotePoint = `https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`;
 
-        // if (fromValue > 0) {
-        //     // Fetch the swap price.
-        //     const res = await fetch(`${quotePoint}`);
-        //     const swapQuoteJSON = await res.json();
+    // if (fromValue > 0) {
+    //     // Fetch the swap price.
+    //     const res = await fetch(`${quotePoint}`);
+    //     const swapQuoteJSON = await res.json();
 
-        //     const conversion = Number(swapQuoteJSON.buyAmount / (10 ** isToTokenDecimal));
-        //     setToInputValue(conversion);
-        // }
-    }
+    //     const conversion = Number(swapQuoteJSON.buyAmount / (10 ** isToTokenDecimal));
+    //     setToInputValue(conversion);
+    // }
+    // }
 
     // const getWalletDetails = async () => {
     //     const config = {
@@ -115,33 +107,27 @@ const Create = () => {
     );
 
     useEffect(() => {
-        // getWalletDetails();
-        setListedTokens(data?.data)
-        setTokens(data?.data?.tokens)
+        if (tokens) {
+            const fromToken = tokens[0];
+            const toToken = tokens[1];
 
-        if (data && data.data) {
-            if (data.data.tokens.length > 0) {
+            //image and symbol
+            setIsFromToken(fromToken.symbol)
+            setIsFromTokenImg(fromToken.logoURI);
 
-                const fromToken = data.data.tokens[0];
-                const toToken = data.data.tokens[1];
+            setIsToToken(toToken.symbol);
+            setIsToTokenImg(toToken.logoURI);
 
-                //image and symbol
-                setIsFromToken(fromToken.symbol)
-                setIsFromTokenImg(fromToken.logoURI);
+            //set contract addresses
+            setIsFromTokenAddress("0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2");
+            setIsToTokenAddress("0x6b175474e89094c44da98b954eedeac495271d0f");
 
-                setIsToToken(toToken.symbol);
-                setIsToTokenImg(toToken.logoURI);
-
-                //set contract addresses
-                setIsFromTokenAddress("0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2");
-                setIsToTokenAddress("0x6b175474e89094c44da98b954eedeac495271d0f");
-
-                //set token decimals
-                setIsFromTokenDecimal(fromToken.decimals)
-                setIsToTokenDecimal(toToken.decimals);
-            }
+            //set token decimals
+            setIsFromTokenDecimal(fromToken.decimals)
+            setIsToTokenDecimal(toToken.decimals);
         }
-    }, [data])
+
+    }, [tokens])
 
     // const items = new Array(1000).fill().map((value, index) => ({
     //     id: index,
@@ -162,30 +148,42 @@ const Create = () => {
     }, [token])
 
     const onCreate = async () => {
-        // creates the pool
-        const createPool = await EkodexContract.createPool(`${ekoTokenAddress}`, `${ETHAddress}`);
-        await createPool.wait();
-
         const amount = ethers.utils.formatEther(10000) * 10 ** 18;
 
-        // adds liquidity to the pool
-        const addLQ = await EkodexContract.addLiquidity(`${ekoTokenAddress}`, `${ETHAddress}`,
-            amount,
-            amount,
-            0,
-            0,
-            `${account}`
-        )
-        await addLQ.wait();
+        // creates the pool
+        try {
+            const createPool = await EkodexContract.createPool(`${ekoTokenAddress}`, `${ETHAddress}`);
+            await createPool.wait();
 
-        toast({
-            title: 'Pool Created',
-            description: "Pair Pool has been created",
-            status: 'success',
-            duration: 3000,
-            variant: 'solid',
-            position: 'top-right',
-        });
+            // adds liquidity to the pool
+            const addLQ = await EkodexContract.addLiquidity(`${ekoTokenAddress}`, `${ETHAddress}`,
+                amount,
+                amount,
+                0,
+                0,
+                `${account}`
+            )
+            await addLQ.wait();
+
+            toast({
+                title: 'Pool Created',
+                description: "Pair Pool has been created",
+                status: 'success',
+                duration: 3000,
+                variant: 'solid',
+                position: 'top-right',
+            });
+
+        } catch ({ message }) {
+            toast({
+                title: 'Pool is already created',
+                description: "Pair pool already exists",
+                status: 'error',
+                duration: 3000,
+                variant: 'solid',
+                position: 'top-right',
+            });
+        }
     }
 
     return (
@@ -237,7 +235,7 @@ const Create = () => {
                                     action={"from"}
                                     callback={() => setSwitchType("from")}
                                     onchange={e => setFromInputValue(e.target.value)}
-                                    defaultvalue={fromValue}
+                                    defaultvalue={`${1000}`}
                                 />
 
                                 {/* <Box position={"absolute"}
@@ -246,9 +244,8 @@ const Create = () => {
                         >
                             <Text textAlign={"center"}>Flip</Text>
                         </Box> */}
-
                                 <PriceBox
-                                    defaultvalue={`${toValue}`}
+                                    defaultvalue={`${1000}`}
                                     token={isToToken}
                                     bottom={"0%"}
                                     img={isToTokenImg}
@@ -272,7 +269,6 @@ const Create = () => {
                         </Flex>
                     </> : <Text>Feeds Faild to Load</Text>}
             </Box>
-
 
             <Modal isOpen={isRModalOpen} onClose={closeModal}>
                 <ModalOverlay />
