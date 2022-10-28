@@ -150,6 +150,25 @@ const Create = () => {
     const onCreate = async () => {
         const amount = ethers.utils.formatEther(10000) * 10 ** 18;
 
+        const localProvider = new ethers.providers.Web3Provider(window.ethereum);
+        const localSigner = localProvider.getSigner();
+
+        const isMetaMaskConnected = await window.ethereum.request({
+            method: "eth_accounts",
+        });
+
+        // remove existing address if wallet is not connected to browser
+        if (isMetaMaskConnected.length < 1)
+            return toast({
+                title: 'Connect Metamask',
+                description: "Connect E-Wallet to Continue",
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+                variant: 'solid',
+                position: 'top-right',
+            });
+
         // creates the pool
         try {
             const createPool = await EkodexContract.createPool(`${ekoTokenAddress}`, `${ETHAddress}`);

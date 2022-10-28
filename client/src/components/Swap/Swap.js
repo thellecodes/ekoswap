@@ -49,8 +49,12 @@ const Swap = () => {
     ETHAddress,
     EkodexContract,
     tokens,
+    isFromTokenAddress,
+    isToTokenAddresss
   } = useContext(WalletContext);
   const toast = useToast();
+
+  console.log(isFromTokenAddress, isToTokenAddresss);
 
   const [fromValue, setFromInputValue] = useState("0");
   const [toValue, setToInputValue] = useState("0");
@@ -60,6 +64,7 @@ const Swap = () => {
     setFromAddress("");
     setToAddress("");
   }
+
 
   // async function getPrice() {
   //     const params = {
@@ -147,27 +152,48 @@ const Swap = () => {
     }
   }, [token])
 
-  const onCreate = async () => {
-    const amount = ethers.utils.formatEther(10000) * 10 ** 18;
+  const onSwap = async () => {
+    if (!window.ethereum)
+      return toast({
+        title: 'Download Wallet',
+        description: "Install E-Wallet to Continue",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        variant: 'solid',
+        position: 'top-right',
+      });
 
-    // creates the pool
+    const localProvider = new ethers.providers.Web3Provider(window.ethereum);
+    const localSigner = localProvider.getSigner();
+
+    const isMetaMaskConnected = await window.ethereum.request({
+      method: "eth_accounts",
+    });
+
+    // remove existing address if wallet is not connected to browser
+    if (isMetaMaskConnected.length < 1)
+      return toast({
+        title: 'Connect Metamask',
+        description: "Connect E-Wallet to Continue",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        variant: 'solid',
+        position: 'top-right',
+      });
+
+    const amount = ethers.utils.formatEther(100) * 10 ** 18;
+
+
+    // swap from pool
     try {
-      const createPool = await EkodexContract.createPool(`${ekoTokenAddress}`, `${ETHAddress}`);
+      const createPool = await EkodexContract.swap(`${amount}`, [isFromToken, isToTokenAddresss]);
       await createPool.wait();
 
-      // adds liquidity to the pool
-      const addLQ = await EkodexContract.addLiquidity(`${ekoTokenAddress}`, `${ETHAddress}`,
-        amount,
-        amount,
-        0,
-        0,
-        `${account}`
-      )
-      await addLQ.wait();
-
       toast({
-        title: 'Swap',
-        description: "Pair Pool has been created",
+        title: 'Swap completed',
+        description: "Check your wallet to see your tokens",
         status: 'success',
         duration: 3000,
         variant: 'solid',
@@ -175,9 +201,10 @@ const Swap = () => {
       });
 
     } catch ({ message }) {
+      console.log(message)
       toast({
-        title: 'Pool is already created',
-        description: "Pair pool already exists",
+        title: 'Something Went Wrong',
+        description: "Web admin notified",
         status: 'error',
         duration: 3000,
         variant: 'solid',
@@ -263,8 +290,8 @@ const Swap = () => {
                 bg="ekoswap.btnGrad2" color="white"
                 _hover={{ bg: "ekoswap.btnGrad2" }}
                 _active={{ bg: "ekoswap.btnGrad2" }}
-                onClick={onCreate}
-              >Transact</Button>
+                onClick={onSwap}
+              >Swap</Button>
             </Flex>
           </> : <Text>Feeds Faild to Load</Text>}
       </Box>

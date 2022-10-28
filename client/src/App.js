@@ -76,11 +76,11 @@ function App() {
     if (switchType && switchType != null && switchType === "from") {
       setIsFromToken(activeToken);
       setIsFromTokenImg(activeTokenImg);
-    }
-
-    if (switchType && switchType != null && switchType === "to") {
+      // console.log(activeToken, activeTokenImg, 'from')
+    } else if (switchType && switchType != null && switchType === "to") {
       setIsToToken(activeToken);
       setIsToTokenImg(activeTokenImg);
+      // console.log(activeToken, activeTokenImg, 'to')
     }
   }, [activeToken])
 
@@ -275,7 +275,7 @@ function App() {
                   }
                 />
                 <Route path="/pool/create" element={<Create />} />
-                <Route path="/pool/increase" />
+                <Route path="*" element={<Home />} />
               </Routes>
             </Router>
           </RModalContextProvider>
